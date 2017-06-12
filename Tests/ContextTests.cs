@@ -1,9 +1,9 @@
 ﻿// Copyright (C) 2017 Robert A. Wallis, All Rights Reserved.
 
+using ECSLight;
 using NUnit.Framework;
-using SECS;
 
-namespace Tests.SECS
+namespace Tests
 {
 	[TestFixture]
 	class ContextTests

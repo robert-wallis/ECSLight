@@ -3,7 +3,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SECS
+namespace ECSLight
 {
 	/// <summary>
 	/// Bag is like a List but adds and removes more quickly by not keeping order.

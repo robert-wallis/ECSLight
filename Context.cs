@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SECS
+namespace ECSLight
 {
 	public class Context
 	{
