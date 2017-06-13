@@ -54,6 +54,7 @@
     <Compile Include="BComponent.cs" />
     <Compile Include="ComponentManagerTests.cs" />
     <Compile Include="ContextTests.cs" />
+    <Compile Include="EntitySetTests.cs" />
     <Compile Include="EntityTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StubComponentManager.cs" />
