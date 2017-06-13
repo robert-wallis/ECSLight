@@ -3,7 +3,7 @@
 using System;
 using ECSLight;
 
-namespace Tests
+namespace Tests.Stubs
 {
 	internal class StubSetManager : ISetManager
 	{

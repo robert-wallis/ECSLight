@@ -2,7 +2,7 @@
 
 using ECSLight;
 
-namespace Tests
+namespace Tests.Stubs
 {
 	class BComponent : IComponent
 	{

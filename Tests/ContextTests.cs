@@ -4,6 +4,7 @@ using System.Collections;
 using System.Linq;
 using ECSLight;
 using NUnit.Framework;
+using Tests.Stubs;
 
 namespace Tests
 {

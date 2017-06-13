@@ -3,6 +3,7 @@
 using System.Collections;
 using ECSLight;
 using NUnit.Framework;
+using Tests.Stubs;
 
 namespace Tests
 {

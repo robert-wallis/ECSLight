@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using ECSLight;
 
-namespace Tests
+namespace Tests.Stubs
 {
 	internal class StubComponentManager : IComponentManager
 	{
