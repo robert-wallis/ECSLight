@@ -27,7 +27,18 @@ namespace Tests
 			var c1 = new Context();
 			var e1 = c1.CreateEntity();
 			var c2 = new Context();
-			// TODO: enumerate components
+			var c1count = 0;
+			foreach (var e in c1) {
+				Assert.AreEqual(e1, e);
+				c1count++;
+			}
+			var c2count = 0;
+			foreach (var e in c2) {
+				Assert.Fail($"Should be no entities in c2, but there was {e}");
+				c2count++;
+			}
+			Assert.AreEqual(1, c1count);
+			Assert.AreEqual(0, c2count);
 		}
 
 		[Test]

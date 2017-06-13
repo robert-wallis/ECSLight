@@ -1,6 +1,7 @@
 ﻿// Copyright (C) 2017 Robert A. Wallis, All Rights Reserved.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace ECSLight
@@ -10,7 +11,7 @@ namespace ECSLight
 	/// For example, a game could have a 'board' context with 'piece' entities.
 	/// And a multiplayer game could have multiple 'board' contexts.
 	/// </summary>
-	public class Context
+	public class Context : IEnumerable<Entity>
 	{
 		private readonly Dictionary<Entity, Dictionary<Type, IComponent>> _allEntities;
 		private readonly ComponentManager _componentManager;
@@ -51,6 +52,22 @@ namespace ECSLight
 		public EntitySet SetContaining(params Type[] types)
 		{
 			return _setManager.SetContaining(types);
+		}
+
+		/// <summary>
+		/// Enumerator for all the entities.
+		/// </summary>
+		public IEnumerator<Entity> GetEnumerator()
+		{
+			return _allEntities.Keys.GetEnumerator();
+		}
+
+		/// <summary>
+		/// Enumerator for all the entities.
+		/// </summary>
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 	}
 }
