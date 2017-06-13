@@ -52,9 +52,11 @@
   <ItemGroup>
     <Compile Include="AComponent.cs" />
     <Compile Include="BComponent.cs" />
+    <Compile Include="ComponentManagerTests.cs" />
     <Compile Include="ContextTests.cs" />
     <Compile Include="EntityTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StubSetManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ECSLight.csproj">
