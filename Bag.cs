@@ -6,9 +6,9 @@ using System.Collections.Generic;
 namespace ECSLight
 {
 	/// <summary>
-	/// Bag is like a List but adds and removes more quickly by not keeping order.
+	/// Bag is like a List but adds and removes more quickly by not maintaining order.
 	/// </summary>
-	class Bag<T> : ICollection<T>
+	internal class Bag<T> : ICollection<T>
 	{
 		public int Count => _list.Count;
 		public bool IsReadOnly => false;
@@ -50,10 +50,24 @@ namespace ECSLight
 			_list.CopyTo(array, arrayIndex);
 		}
 
+		/// <summary>
+		/// Removes item and replaces it with the end of the list.  Then removes the end.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns>true if an item was removed</returns>
 		public bool Remove(T item)
 		{
-			// TODO: swap with end, and delete end
-			return _list.Remove(item);
+			var index = _list.IndexOf(item);
+			if (index == -1)
+				return false;
+			var last = _list.Count - 1;
+			if (last < 0) {
+				_list.Clear();
+				return true;
+			}
+			_list[index] = _list[last];
+			_list.RemoveAt(last);
+			return true;
 		}
 	}
 }
