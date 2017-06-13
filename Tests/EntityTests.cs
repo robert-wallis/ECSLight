@@ -1,5 +1,6 @@
 ﻿// Copyright (C) 2017 Robert A. Wallis, All Rights Reserved.
 
+using System.Collections;
 using ECSLight;
 using NUnit.Framework;
 
@@ -37,6 +38,15 @@ namespace Tests
 			// remove
 			e.Remove<AComponent>();
 			Assert.IsFalse(e.Contains<AComponent>());
+		}
+
+		[Test]
+		public void CoverIEnumerable()
+		{
+			var entity = new Entity(new StubComponentManager());
+			var enumerable = entity as IEnumerable;
+			var enumerator = enumerable.GetEnumerator();
+			// didn't crash
 		}
 	}
 }
