@@ -8,7 +8,7 @@ namespace ECSLight
 	/// <summary>
 	/// Bag is like a List but adds and removes more quickly by not maintaining order.
 	/// </summary>
-	internal class Bag<T> : ICollection<T>
+	public class Bag<T> : ICollection<T>
 	{
 		public int Count => _list.Count;
 		public bool IsReadOnly => false;
@@ -61,10 +61,6 @@ namespace ECSLight
 			if (index == -1)
 				return false;
 			var last = _list.Count - 1;
-			if (last < 0) {
-				_list.Clear();
-				return true;
-			}
 			_list[index] = _list[last];
 			_list.RemoveAt(last);
 			return true;
