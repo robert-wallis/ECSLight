@@ -39,23 +39,4 @@ namespace Tests
 			Assert.IsFalse(e.Contains<AComponent>());
 		}
 	}
-
-	class AComponent : IComponent
-	{
-		private readonly string _name;
-
-		public AComponent(string name)
-		{
-			_name = name;
-		}
-
-		public override string ToString()
-		{
-			return _name;
-		}
-	}
-
-	class BComponent : IComponent
-	{
-	}
 }

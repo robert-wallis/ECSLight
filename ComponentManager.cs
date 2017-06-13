@@ -29,8 +29,10 @@ namespace ECSLight
 			// add component to entity
 			if (!_entities.ContainsKey(entity))
 				_entities[entity] = new Dictionary<Type, IComponent>(1);
+			var replaceComponent = _entities[entity].ContainsKey(type);
 			_entities[entity][type] = component;
-			_setManager.AddEntityToSets(entity, type);
+			if (!replaceComponent)
+				_setManager.AddEntityToSets(entity, type);
 		}
 
 		/// <summary>

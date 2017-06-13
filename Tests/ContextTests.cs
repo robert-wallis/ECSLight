@@ -60,7 +60,7 @@ namespace Tests
 				var setA = context.SetContaining(typeof(AComponent));
 				Assert.AreEqual(0, setA.Count);
 				entity.Add(component);
-				// test should automatically match after component is added
+				// set should automatically match after component is added
 				foreach (var e in setA) {
 					Assert.AreEqual(component, e.Get<AComponent>());
 				}
@@ -81,6 +81,25 @@ namespace Tests
 				}
 				Assert.AreEqual(1, setA2.Count);
 			}
+
+			// set should not increase the entities matched if another component is added
+			{
+				var setA = context.SetContaining(typeof(AComponent));
+				Assert.AreEqual(1, setA.Count);
+				entity.Add(new AComponent("inner"));
+				Assert.AreEqual(1, setA.Count);
+			}
+		}
+
+		[Test]
+		public void ContextSetEdgeCases()
+		{
+			var context = new Context();
+			var entity = context.CreateEntity();
+			entity.Add(new AComponent("a"));
+			entity.Add(new BComponent());
+			var set = context.SetContaining(typeof(AComponent), typeof(BComponent));
+			Assert.AreEqual(1, set.Count, "Set should only have 1 entity when it matches 2 components");
 		}
 
 		[Test]
