@@ -35,6 +35,8 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
+    <None Include=".gitignore" />
+    <None Include="LICENSE" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bag.cs" />
