@@ -8,7 +8,6 @@ namespace ECSLight
 	public class EntitySet : IEnumerable<Entity>
 	{
 		public int Count => _entities.Count;
-		public bool IsReadOnly => false;
 
 		private readonly Bag<Entity> _entities;
 
