@@ -1,5 +1,6 @@
 ﻿// Copyright (C) 2017 Robert A. Wallis, All Rights Reserved.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -34,6 +35,14 @@ namespace ECSLight
 		public bool Contains<TComponent>() where TComponent : IComponent
 		{
 			return _componentManager.ContainsComponent<TComponent>(this);
+		}
+
+		/// <summary>
+		/// Check if this entity has a component type.
+		/// </summary>
+		public bool Contains(Type type)
+		{
+			return _componentManager.ContainsComponent(this, type);
 		}
 
 		/// <summary>

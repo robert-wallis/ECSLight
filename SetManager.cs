@@ -44,9 +44,8 @@ namespace ECSLight
 			// include entities that have the same type
 			foreach (var kvp in _entities) {
 				var entity = kvp.Key;
-				var components = kvp.Value;
 				foreach (var type in matchTypes) {
-					if (!components.ContainsKey(type))
+					if (!entity.Contains(type))
 						continue;
 					matchSet.Add(entity);
 					break; // no need to add again if another type matches
