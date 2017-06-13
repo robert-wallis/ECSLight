@@ -4,7 +4,7 @@ using ECSLight;
 
 namespace Tests.Stubs
 {
-	class BComponent : IComponent
+	internal class BComponent : IComponent
 	{
 	}
 }

@@ -46,7 +46,7 @@ namespace Tests
 		{
 			var entity = new Entity(new StubComponentManager());
 			var enumerable = entity as IEnumerable;
-			var enumerator = enumerable.GetEnumerator();
+			enumerable.GetEnumerator();
 			// didn't crash
 		}
 	}

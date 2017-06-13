@@ -4,7 +4,7 @@ using ECSLight;
 
 namespace Tests.Stubs
 {
-	class AComponent : IComponent
+	internal class AComponent : IComponent
 	{
 		private readonly string _name;
 

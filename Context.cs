@@ -14,14 +14,15 @@ namespace ECSLight
 	public class Context : IEnumerable<Entity>
 	{
 		private readonly Dictionary<Entity, Dictionary<Type, IComponent>> _allEntities;
-		private readonly ComponentManager _componentManager;
 		private readonly SetManager _setManager;
+		private readonly EntityManager _entityManager;
 
 		public Context(int capacity = 128)
 		{
 			_allEntities = new Dictionary<Entity, Dictionary<Type, IComponent>>(capacity);
 			_setManager = new SetManager(_allEntities);
-			_componentManager = new ComponentManager(_allEntities, _setManager);
+			var componentManager = new ComponentManager(_allEntities, _setManager);
+			_entityManager = new EntityManager(_allEntities, componentManager);
 		}
 
 		/// <summary>
@@ -30,9 +31,7 @@ namespace ECSLight
 		/// <returns>new empty entity</returns>
 		public Entity CreateEntity()
 		{
-			var entity = new Entity(_componentManager);
-			_allEntities.Add(entity, new Dictionary<Type, IComponent>());
-			return entity;
+			return _entityManager.CreateEntity();
 		}
 
 		/// <summary>
@@ -41,14 +40,7 @@ namespace ECSLight
 		/// <param name="entity">Entity to be released.</param>
 		public void ReleaseEntity(Entity entity)
 		{
-			var types = new List<Type>();
-			foreach (var component in entity) {
-				types.Add(component.GetType());
-			}
-			foreach (var type in types) {
-				_componentManager.RemoveComponent(entity, type);
-			}
-			_allEntities.Remove(entity);
+			_entityManager.ReleaseEntity(entity);
 		}
 
 		/// <summary>
