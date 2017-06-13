@@ -41,7 +41,13 @@ namespace ECSLight
 		/// <param name="entity">Entity to be released.</param>
 		public void ReleaseEntity(Entity entity)
 		{
-			// TODO: remove components from entity
+			var types = new List<Type>();
+			foreach (var component in entity) {
+				types.Add(component.GetType());
+			}
+			foreach (var type in types) {
+				_componentManager.RemoveComponent(entity, type);
+			}
 			_allEntities.Remove(entity);
 		}
 
