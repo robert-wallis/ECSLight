@@ -15,15 +15,15 @@ namespace Tests
 
 			// init
 			var e = context.CreateEntity();
-			Assert.IsFalse(e.Has<AComponent>());
+			Assert.IsFalse(e.Contains<AComponent>());
 
 			// add
 			var aComponent = new AComponent("a1");
 			e.Add(aComponent);
-			Assert.IsTrue(e.Has<AComponent>());
+			Assert.IsTrue(e.Contains<AComponent>());
 			Assert.AreSame(aComponent, e.Get<AComponent>());
 			var bComponent = new BComponent();
-			Assert.IsFalse(e.Has<BComponent>());
+			Assert.IsFalse(e.Contains<BComponent>());
 			e.Add(bComponent);
 			Assert.AreSame(bComponent, e.Get<BComponent>());
 			Assert.AreSame(aComponent, e.Get<AComponent>());
@@ -36,7 +36,7 @@ namespace Tests
 
 			// remove
 			e.Remove<AComponent>();
-			Assert.IsFalse(e.Has<AComponent>());
+			Assert.IsFalse(e.Contains<AComponent>());
 		}
 	}
 

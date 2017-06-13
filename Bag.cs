@@ -10,9 +10,12 @@ namespace ECSLight
 	/// </summary>
 	class Bag<T> : ICollection<T>
 	{
+		public int Count => _list.Count;
+		public bool IsReadOnly => false;
+
 		private readonly List<T> _list;
 
-		public Bag(int capacity)
+		public Bag(int capacity = 0)
 		{
 			_list = new List<T>(capacity);
 		}
@@ -49,17 +52,8 @@ namespace ECSLight
 
 		public bool Remove(T item)
 		{
+			// TODO: swap with end, and delete end
 			return _list.Remove(item);
-		}
-
-		public int Count
-		{
-			get { return _list.Count; }
-		}
-
-		public bool IsReadOnly
-		{
-			get { return false; }
 		}
 	}
 }

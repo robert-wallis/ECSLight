@@ -18,22 +18,22 @@ namespace ECSLight
 
 		public void Add<TComponent>(TComponent component) where TComponent : class, IComponent
 		{
-			_context.Add<TComponent>(this, component);
+			_context.AddComponent(this, component);
 		}
 
-		public bool Has<TComponent>() where TComponent : IComponent
+		public bool Contains<TComponent>() where TComponent : IComponent
 		{
-			return _context.Has<TComponent>(this);
+			return _context.ContainsComponent<TComponent>(this);
 		}
 
 		public TComponent Get<TComponent>() where TComponent : class, IComponent
 		{
-			return _context.Get<TComponent>(this);
+			return _context.ComponentFrom<TComponent>(this);
 		}
 
 		public void Remove<TComponent>() where TComponent : class, IComponent
 		{
-			_context.Remove<TComponent>(this);
+			_context.RemoveComponent<TComponent>(this);
 		}
 	}
 }

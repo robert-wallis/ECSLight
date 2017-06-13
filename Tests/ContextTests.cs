@@ -35,13 +35,33 @@ namespace Tests
 		{
 			var context = new Context();
 			var entity = context.CreateEntity();
-			var matcher = context.Having(typeof(AComponent));
-			Assert.AreEqual(0, matcher.Count);
 			var component = new AComponent("a1");
-			entity.Add(component);
-			var enumerator = matcher.GetEnumerator();
-			enumerator.MoveNext();
-			Assert.AreEqual(component, enumerator.Current);
+			// matcher doesn't match until component is attached
+			{
+				var matcher = context.EntitiesContaining(typeof(AComponent));
+				Assert.AreEqual(0, matcher.Count);
+				entity.Add(component);
+				// matcher should automatically match after component is added
+				foreach (var e in matcher) {
+					Assert.AreEqual(component, e.Get<AComponent>());
+				}
+				Assert.AreEqual(1, matcher.Count);
+			}
+
+			// B doesn't match 'entity' because it doesn't have a BComponent.
+			{
+				var matcherB = context.EntitiesContaining(typeof(BComponent));
+				Assert.AreEqual(0, matcherB.Count);
+			}
+
+			// another A matcher should also match
+			{
+				var matcherA2 = context.EntitiesContaining(typeof(AComponent));
+				foreach (var e in matcherA2) {
+					Assert.AreEqual(component, e.Get<AComponent>());
+				}
+				Assert.AreEqual(1, matcherA2.Count);
+			}
 		}
 	}
 }

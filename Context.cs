@@ -5,15 +5,20 @@ using System.Collections.Generic;
 
 namespace ECSLight
 {
+	/// <summary>
+	/// A context manages a set of entities and matchers.
+	/// For example, a game could have a 'board' context with 'piece' entities.
+	/// And a multiplayer game could have multiple 'board' contexts.
+	/// </summary>
 	public class Context
 	{
 		private readonly Dictionary<Entity, Dictionary<Type, IComponent>> _entities;
-		private readonly Dictionary<Type, Bag<IComponent>> _components;
+		private readonly Dictionary<HashSet<Type>, EntitySet> _matchers;
 
-		public Context()
+		public Context(int capacity = 128)
 		{
-			_components = new Dictionary<Type, Bag<IComponent>>();
-			_entities = new Dictionary<Entity, Dictionary<Type, IComponent>>(128);
+			_entities = new Dictionary<Entity, Dictionary<Type, IComponent>>(capacity);
+			_matchers = new Dictionary<HashSet<Type>, EntitySet>();
 		}
 
 		/// <summary>
@@ -41,14 +46,23 @@ namespace ECSLight
 		/// <typeparam name="TComponent">Type of component to attach.</typeparam>
 		/// <param name="entity">Entity to which the component should be attached.</param>
 		/// <param name="component">Component to attach to the entity.</param>
-		public void Add<TComponent>(Entity entity, TComponent component) where TComponent : class, IComponent
+		public void AddComponent<TComponent>(Entity entity, TComponent component) where TComponent : class, IComponent
 		{
+			var type = typeof(TComponent);
+
+			// add component to entity
 			if (!_entities.ContainsKey(entity))
 				_entities[entity] = new Dictionary<Type, IComponent>(1);
-			if (!_components.ContainsKey(typeof(TComponent)))
-				_components[typeof(TComponent)] = new Bag<IComponent>(128);
-			_components[typeof(TComponent)].Add(component);
-			_entities[entity][typeof(TComponent)] = component;
+			_entities[entity][type] = component;
+
+			// add entity to all matchers
+			foreach (var kvp in _matchers) {
+				var types = kvp.Key;
+				var entities = kvp.Value;
+				if (types.Contains(type)) {
+					entities.Add(entity);
+				}
+			}
 		}
 
 		/// <summary>
@@ -57,7 +71,7 @@ namespace ECSLight
 		/// <typeparam name="TComponent">Type of component that may be attached to the entity.</typeparam>
 		/// <param name="entity">Entity to check if component is attached.</param>
 		/// <returns>`true` if the entity has a component of that type attached</returns>
-		public bool Has<TComponent>(Entity entity) where TComponent : IComponent
+		public bool ContainsComponent<TComponent>(Entity entity) where TComponent : IComponent
 		{
 			if (!_entities.ContainsKey(entity))
 				return false;
@@ -71,7 +85,7 @@ namespace ECSLight
 		/// <typeparam name="TComponent">Type of component to remove.</typeparam>
 		/// <param name="entity">Which entity owns the component?</param>
 		/// <returns>`null` if no component is attached</returns>
-		public TComponent Get<TComponent>(Entity entity) where TComponent : class, IComponent
+		public TComponent ComponentFrom<TComponent>(Entity entity) where TComponent : class, IComponent
 		{
 			if (!_entities.ContainsKey(entity))
 				return null;
@@ -81,13 +95,18 @@ namespace ECSLight
 		/// <summary>
 		/// Returns all entities that have the specified components.
 		/// </summary>
-		/// <typeparam name="TComponent"></typeparam>
-		/// <returns></returns>
-		public ICollection<Entity> Having(params Type[] types)
+		/// <returns>An enumerable list of entities, that will update automatically.</returns>
+		public EntitySet EntitiesContaining(params Type[] types)
 		{
-			if (!_components.ContainsKey(types[0]))
-				return new List<Entity>();
-			return (ICollection<Entity>)_components[types[0]];
+			var matchTypes = new HashSet<Type>(types);
+			foreach (var kvp in _matchers) {
+				var matcher = kvp.Key;
+				if (matcher.SetEquals(matchTypes)) {
+					return kvp.Value;
+				}
+			}
+			var entities = CreateEntitySet(matchTypes);
+			return entities;
 		}
 
 		/// <summary>
@@ -95,16 +114,44 @@ namespace ECSLight
 		/// </summary>
 		/// <typeparam name="TComponent">Type of component to remove from entitiy.</typeparam>
 		/// <param name="entity">Entity from which component is removed.</param>
-		public void Remove<TComponent>(Entity entity) where TComponent : class, IComponent
+		public void RemoveComponent<TComponent>(Entity entity) where TComponent : class, IComponent
 		{
+			var type = typeof(TComponent);
 			if (!_entities.ContainsKey(entity))
 				return;
-			var component = Get<TComponent>(entity);
-			if (component != null)
-				_components[typeof(TComponent)].Remove(component);
-			_entities[entity].Remove(typeof(TComponent));
+			_entities[entity].Remove(type);
+
+			// remove entity from any matchers that it no longer qualifies for
+			foreach (var kvp in _matchers) {
+				var types = kvp.Key;
+				var entities = kvp.Value;
+				if (types.Contains(type)) {
+					entities.Remove(entity);
+				}
+			}
 		}
 
-
+		/// <summary>
+		/// Make a new entity set.
+		/// </summary>
+		/// <param name="matchTypes"></param>
+		/// <returns></returns>
+		private EntitySet CreateEntitySet(HashSet<Type> matchTypes)
+		{
+			var matchSet = new EntitySet();
+			// include entities that have the same type
+			foreach (var kvp in _entities) {
+				var entity = kvp.Key;
+				var components = kvp.Value;
+				foreach (var type in matchTypes) {
+					if (!components.ContainsKey(type))
+						continue;
+					matchSet.Add(entity);
+					break; // no need to add again if another type matches
+				}
+			}
+			_matchers[matchTypes] = matchSet;
+			return matchSet;
+		}
 	}
 }
