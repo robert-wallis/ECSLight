@@ -22,4 +22,5 @@ The user is of course free to put a Context into a singleton themself.  (We thin
 singletons often allow code to violate dependency inversion, making it harder to test.)
 
 We don't claim ECS Light is the prime example of Clean-Code.  Surely it violates some SOLID principles.
-Please submit a pull-request if you would like to refactor ECS Light into a cleaner, faster library for everyone.
+
+Please submit a pull-request if you would like to refactor ECS Light into a cleaner, faster, and lighter, library for everyone.
