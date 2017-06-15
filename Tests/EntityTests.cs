@@ -16,7 +16,7 @@ namespace Tests
 			var context = new Context();
 
 			// init
-			var e = context.CreateEntity();
+			var e = context.CreateEntity("e");
 			Assert.IsFalse(e.Contains<AComponent>());
 
 			// add
@@ -45,7 +45,7 @@ namespace Tests
 		public void CoverIEnumerable()
 		{
 			var entity = new Entity(new StubComponentManager());
-			var enumerable = entity as IEnumerable;
+			var enumerable = (IEnumerable) entity;
 			enumerable.GetEnumerator();
 			// didn't crash
 		}

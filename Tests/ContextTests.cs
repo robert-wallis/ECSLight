@@ -15,9 +15,9 @@ namespace Tests
 		public void CreateRemoveEntity()
 		{
 			var context = new Context();
-			var e1 = context.CreateEntity();
+			var e1 = context.CreateEntity("e1");
 			Assert.NotNull(e1);
-			var e2 = context.CreateEntity();
+			var e2 = context.CreateEntity("e2");
 			Assert.NotNull(e2);
 
 			Assert.AreEqual(2, context.Count());
@@ -33,7 +33,7 @@ namespace Tests
 		public void ContextsNotShared()
 		{
 			var c1 = new Context();
-			var e1 = c1.CreateEntity();
+			var e1 = c1.CreateEntity("e1");
 			var c2 = new Context();
 			var c1Count = 0;
 			foreach (var e in c1) {
@@ -54,11 +54,11 @@ namespace Tests
 		public void ContextSets()
 		{
 			var context = new Context();
-			var entity = context.CreateEntity();
+			var entity = context.CreateEntity("original");
 			var component = new AComponent("a1");
 			// set doesn't match until component is attached
+			var setA = context.SetContaining(typeof(AComponent));
 			{
-				var setA = context.SetContaining(typeof(AComponent));
 				Assert.AreEqual(0, setA.Count);
 				entity.Add(component);
 				// set should automatically match after component is added
@@ -70,8 +70,25 @@ namespace Tests
 
 			// B doesn't match 'entity' because it doesn't have a BComponent.
 			{
+				Assert.AreEqual(1, setA.Count);
 				var setB = context.SetContaining(typeof(BComponent));
 				Assert.AreEqual(0, setB.Count);
+			}
+
+			// A doesn't match because it must be A AND B
+			{
+				Assert.AreEqual(1, setA.Count);
+				Assert.IsFalse(entity.Contains<BComponent>());
+				var setAandB = context.SetContaining(typeof(AComponent), typeof(BComponent));
+				Assert.AreNotSame(setA, setAandB);
+				Assert.AreEqual(0, setAandB.Count, "Entity should not match, has no BComponent");
+				var entityAandB = context.CreateEntity("ab");
+				entityAandB.Add(new AComponent("ab test"));
+				entityAandB.Add(new BComponent());
+				Assert.AreEqual(1, setAandB.Count, "Entity should match, has A and B Components");
+				Assert.AreEqual(2, setA.Count, "Set A should now match both");
+				context.ReleaseEntity(entityAandB);
+				Assert.AreEqual(0, setAandB.Count, "Entity should not match, was removed.");
 			}
 
 			// another A set should also match
@@ -85,7 +102,6 @@ namespace Tests
 
 			// set should not increase the entities matched if another component is added
 			{
-				var setA = context.SetContaining(typeof(AComponent));
 				Assert.AreEqual(1, setA.Count);
 				entity.Add(new AComponent("inner"));
 				Assert.AreEqual(1, setA.Count);
@@ -96,7 +112,7 @@ namespace Tests
 		public void ContextSetEdgeCases()
 		{
 			var context = new Context();
-			var entity = context.CreateEntity();
+			var entity = context.CreateEntity("edge");
 			entity.Add(new AComponent("a"));
 			entity.Add(new BComponent());
 			var set = context.SetContaining(typeof(AComponent), typeof(BComponent));
@@ -108,7 +124,7 @@ namespace Tests
 		{
 			var context = new Context();
 			var set = context.SetContaining(typeof(AComponent));
-			var entity = context.CreateEntity();
+			var entity = context.CreateEntity("set");
 			var component = new AComponent("a1");
 			entity.Add(component);
 
@@ -128,7 +144,7 @@ namespace Tests
 		{
 			// cover the IEnumerable GetEnumerator function
 			var context = new Context();
-			context.CreateEntity();
+			context.CreateEntity("coverage");
 			var enumerable = context as IEnumerable;
 			foreach (var entity in enumerable) {
 				Assert.IsNotNull(entity);

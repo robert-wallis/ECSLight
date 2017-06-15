@@ -18,9 +18,9 @@ namespace ECSLight
 		/// Make a new entity, or recycle an unused entity.
 		/// </summary>
 		/// <returns>new empty entity</returns>
-		public Entity CreateEntity()
+		public Entity CreateEntity(string name = "")
 		{
-			var entity = new Entity(_componentManager);
+			var entity = new Entity(_componentManager, name);
 			_entities.Add(entity, new Dictionary<Type, IComponent>());
 			return entity;
 		}

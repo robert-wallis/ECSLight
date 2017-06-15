@@ -6,18 +6,27 @@ using System.Collections.Generic;
 
 namespace ECSLight
 {
+	/// <summary>
+	/// An Entity represents a single object that contains components.
+	/// It's really just an interface to the ComponentManager for a single entity.
+	/// Entities are not meant to be subclassed, please use
+	///   Components to specify fields (data),
+	///   and Systems to specify functions (behavior).
+	/// </summary>
 	public class Entity : IEnumerable<IComponent>
 	{
 		private readonly IComponentManager _componentManager;
+		private readonly string _name;
 
 		/// <summary>
 		/// Please use Context.CreateEntity, don't subclass this.
 		/// Please use Components for data, and Systems for behavior.
 		/// Also to avoid GC, entities are pooled by Context.
 		/// </summary>
-		public Entity(IComponentManager componentManager)
+		public Entity(IComponentManager componentManager, string name = "")
 		{
 			_componentManager = componentManager;
+			_name = name;
 		}
 
 		/// <summary>
@@ -70,6 +79,12 @@ namespace ECSLight
 		public IEnumerator<IComponent> GetEnumerator()
 		{
 			return _componentManager.GetEnumerator(this);
+		}
+
+		public override string ToString()
+		{
+			var components = string.Join(", ", this);
+			return string.Format("{0}:[{1}]", _name, components);
 		}
 
 		/// <summary>

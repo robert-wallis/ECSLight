@@ -5,25 +5,29 @@ using System.Collections.Generic;
 
 namespace ECSLight
 {
+	/// <summary>
+	/// Keeps track of all the entity sets.
+	/// Adds and removes entities to the appropriate sets.
+	/// </summary>
 	public class SetManager : ISetManager
 	{
 		private readonly Dictionary<Entity, Dictionary<Type, IComponent>> _entities;
-		private readonly Dictionary<HashSet<Type>, EntitySet> _matchers;
+		private readonly Dictionary<HashSet<Type>, HashSet<Entity>> _entitySets;
 
 		public SetManager(Dictionary<Entity, Dictionary<Type, IComponent>> entities)
 		{
 			_entities = entities;
-			_matchers = new Dictionary<HashSet<Type>, EntitySet>();
+			_entitySets = new Dictionary<HashSet<Type>, HashSet<Entity>>();
 		}
 
 		/// <summary>
-		/// Returns all entities that have the specified components.
+		/// Returns all entitySet that have the specified components.
 		/// </summary>
-		/// <returns>An enumerable list of entities, that will update automatically.</returns>
-		public EntitySet SetContaining(params Type[] types)
+		/// <returns>An enumerable list of entitySet, that will update automatically.</returns>
+		public HashSet<Entity> SetContaining(params Type[] types)
 		{
 			var matchTypes = new HashSet<Type>(types);
-			foreach (var kvp in _matchers) {
+			foreach (var kvp in _entitySets) {
 				var matcher = kvp.Key;
 				if (matcher.SetEquals(matchTypes)) {
 					return kvp.Value;
@@ -34,38 +38,17 @@ namespace ECSLight
 		}
 
 		/// <summary>
-		/// Make a new entity set.
-		/// </summary>
-		/// <param name="matchTypes"></param>
-		/// <returns></returns>
-		private EntitySet CreateEntitySet(HashSet<Type> matchTypes)
-		{
-			var matchSet = new EntitySet();
-			// include entities that have the same type
-			foreach (var kvp in _entities) {
-				var entity = kvp.Key;
-				foreach (var type in matchTypes) {
-					if (!entity.Contains(type))
-						continue;
-					matchSet.Add(entity);
-					break; // no need to add again if another type matches
-				}
-			}
-			_matchers[matchTypes] = matchSet;
-			return matchSet;
-		}
-
-		/// <summary>
 		/// add entity to all matching sets 
 		/// </summary>
-		public void AddEntityToSets(Entity entity, Type type)
+		public void AddEntityToAllSets(Entity entity)
 		{
-			foreach (var kvp in _matchers) {
+			foreach (var kvp in _entitySets) {
 				var types = kvp.Key;
 				var entities = kvp.Value;
-				if (types.Contains(type)) {
+				if (EntityMatchesTypes(entity, types))
 					entities.Add(entity);
-				}
+				else
+					entities.Remove(entity);
 			}
 		}
 
@@ -74,13 +57,47 @@ namespace ECSLight
 		/// </summary>
 		public void RemoveEntityFromSets(Entity entity, Type type)
 		{
-			foreach (var kvp in _matchers) {
+			foreach (var kvp in _entitySets) {
 				var types = kvp.Key;
 				var entities = kvp.Value;
 				if (types.Contains(type)) {
 					entities.Remove(entity);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Make a new entity set.
+		/// </summary>
+		/// <param name="matchTypes"></param>
+		/// <returns></returns>
+		private HashSet<Entity> CreateEntitySet(HashSet<Type> matchTypes)
+		{
+			var entitySet = new HashSet<Entity>();
+			_entitySets[matchTypes] = entitySet;
+			foreach (var kvp in _entities) {
+				if (EntityMatchesTypes(kvp.Key, matchTypes))
+					entitySet.Add(kvp.Key);
+			}
+			return entitySet;
+		}
+
+		/// <summary>
+		/// Checks if the entity should be in the types list.
+		/// </summary>
+		/// <returns>true if the entity matches</returns>
+		private bool EntityMatchesTypes(Entity entity, HashSet<Type> types)
+		{
+			var all = false;
+			foreach (var type in types) {
+				if (entity.Contains(type)) {
+					all = true;
+				} else {
+					all = false;
+					break;
+				}
+			}
+			return all;
 		}
 	}
 }

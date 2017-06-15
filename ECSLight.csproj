@@ -37,15 +37,14 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
     <None Include=".gitignore" />
     <None Include="LICENSE" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bag.cs" />
-    <Compile Include="Component.cs" />
+    <Compile Include="IComponent.cs" />
     <Compile Include="ComponentManager.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityManager.cs" />
-    <Compile Include="EntitySet.cs" />
     <Compile Include="IComponentManager.cs" />
     <Compile Include="ISetManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

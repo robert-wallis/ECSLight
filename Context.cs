@@ -29,9 +29,9 @@ namespace ECSLight
 		/// Make a new entity, or recycle an unused entity.
 		/// </summary>
 		/// <returns>new empty entity</returns>
-		public Entity CreateEntity()
+		public Entity CreateEntity(string name = "")
 		{
-			return _entityManager.CreateEntity();
+			return _entityManager.CreateEntity(name);
 		}
 
 		/// <summary>
@@ -47,7 +47,7 @@ namespace ECSLight
 		/// Returns all entities that have the specified components.
 		/// </summary>
 		/// <returns>An enumerable list of entities, that will update automatically.</returns>
-		public EntitySet SetContaining(params Type[] types)
+		public HashSet<Entity> SetContaining(params Type[] types)
 		{
 			return _setManager.SetContaining(types);
 		}
