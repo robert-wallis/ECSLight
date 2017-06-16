@@ -93,7 +93,12 @@ namespace ECSLight
 
 		public override string ToString()
 		{
-			var components = string.Join(", ", this);
+			// Unity 3.5 target doesnt support IEnumerable to string[], for string.Join() below
+			var componentStrings = new List<string>();
+			foreach(var component in this) {
+				componentStrings.Add(component.ToString());
+			}
+			var components = string.Join(", ", componentStrings.ToArray());
 			return string.Format("{0}:[{1}]", _name, components);
 		}
 
