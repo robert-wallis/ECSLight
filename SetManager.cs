@@ -12,19 +12,19 @@ namespace ECSLight
 	public class SetManager : ISetManager
 	{
 		private readonly IEnumerable<Entity> _entities;
-		private readonly Dictionary<Predicate<Entity>, HashSet<Entity>> _entitySets;
+		private readonly Dictionary<Predicate<Entity>, EntitySet> _entitySets;
 
 		public SetManager(IEnumerable<Entity> entities)
 		{
 			_entities = entities;
-			_entitySets = new Dictionary<Predicate<Entity>, HashSet<Entity>>();
+			_entitySets = new Dictionary<Predicate<Entity>, EntitySet>();
 		}
 
 		/// <summary>
 		/// Returns all entitySet that have the specified components.
 		/// </summary>
 		/// <returns>An enumerable list of entitySet, that will update automatically.</returns>
-		public HashSet<Entity> SetContaining(Predicate<Entity> predicate)
+		public EntitySet SetContaining(Predicate<Entity> predicate)
 		{
 			if (_entitySets.ContainsKey(predicate))
 				return _entitySets[predicate];
@@ -38,9 +38,8 @@ namespace ECSLight
 		public void UpdateEntityMembership(Entity entity)
 		{
 			foreach (var kvp in _entitySets) {
-				var predicate = kvp.Key;
 				var set = kvp.Value;
-				if (predicate.Invoke(entity))
+				if (set.Matches(entity))
 					set.Add(entity);
 				else
 					set.Remove(entity);
@@ -69,12 +68,12 @@ namespace ECSLight
 		/// Make a new entity set.
 		/// </summary>
 		/// <returns></returns>
-		private HashSet<Entity> CreateEntitySet(Predicate<Entity> predicate)
+		private EntitySet CreateEntitySet(Predicate<Entity> predicate)
 		{
-			var entitySet = new HashSet<Entity>();
+			var entitySet = new EntitySet(predicate);
 			_entitySets[predicate] = entitySet;
 			foreach (var entity in _entities) {
-				if (predicate.Invoke(entity))
+				if (entitySet.Matches(entity))
 					entitySet.Add(entity);
 			}
 			return entitySet;

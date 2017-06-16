@@ -58,7 +58,7 @@ namespace ECSLight
 		/// Returns all entities that match the predicate.
 		/// </summary>
 		/// <returns>An enumerable list of entities, that will update automatically.</returns>
-		public HashSet<Entity> SetContaining(Predicate<Entity> predicate)
+		public EntitySet SetContaining(Predicate<Entity> predicate)
 		{
 			return _setManager.SetContaining(predicate);
 		}

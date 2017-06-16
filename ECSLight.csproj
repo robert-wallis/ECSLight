@@ -40,6 +40,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntitySet.cs" />
     <Compile Include="IComponent.cs" />
     <Compile Include="ComponentManager.cs" />
     <Compile Include="Context.cs" />
