@@ -1,6 +1,7 @@
 ﻿// Copyright (C) 2017 Robert A. Wallis, All Rights Reserved.
 
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using ECSLight;
 using NUnit.Framework;
@@ -14,7 +15,12 @@ namespace Tests
 		[Test]
 		public void CreateRemoveEntity()
 		{
-			var context = new Context();
+			var entities = new List<IEntity>();
+			var setManager = new StubSetManager();
+			var componentManager = new StubComponentManager();
+			var entityManager = new EntityManager(entities, componentManager);
+			var context = new Context(entityManager, setManager);
+
 			var e1 = context.CreateEntity("e1");
 			Assert.NotNull(e1);
 			var e2 = context.CreateEntity("e2");
@@ -57,7 +63,7 @@ namespace Tests
 			var entity = context.CreateEntity("original");
 			var component = new AComponent("a1");
 			// set doesn't match until component is attached
-			var setA = context.SetContaining(e => SetManager.EntityMatchesTypes(e, typeof(AComponent)));
+			var setA = context.CreateSet(e => SetManager.EntityMatchesTypes(e, typeof(AComponent)));
 			{
 				Assert.AreEqual(0, setA.Count);
 				entity.Add(component);
@@ -71,7 +77,7 @@ namespace Tests
 			// B doesn't match 'entity' because it doesn't have a BComponent.
 			{
 				Assert.AreEqual(1, setA.Count);
-				var setB = context.SetContaining(e => SetManager.EntityMatchesTypes(e, typeof(BComponent)));
+				var setB = context.CreateSet(e => SetManager.EntityMatchesTypes(e, typeof(BComponent)));
 				Assert.AreEqual(0, setB.Count);
 			}
 
@@ -79,21 +85,21 @@ namespace Tests
 			{
 				Assert.AreEqual(1, setA.Count);
 				Assert.IsFalse(entity.Contains<BComponent>());
-				var setAandB = context.SetContaining(e => SetManager.EntityMatchesTypes(e, typeof(AComponent), typeof(BComponent)));
+				var setAandB = context.CreateSet(e => SetManager.EntityMatchesTypes(e, typeof(AComponent), typeof(BComponent)));
 				Assert.AreNotSame(setA, setAandB);
-				Assert.AreEqual(0, setAandB.Count, "Entity should not match, has no BComponent");
+				Assert.AreEqual(0, setAandB.Count, "IEntity should not match, has no BComponent");
 				var entityAandB = context.CreateEntity("ab");
 				entityAandB.Add(new AComponent("ab test"));
 				entityAandB.Add(new BComponent());
-				Assert.AreEqual(1, setAandB.Count, "Entity should match, has A and B Components");
+				Assert.AreEqual(1, setAandB.Count, "IEntity should match, has A and B Components");
 				Assert.AreEqual(2, setA.Count, "Set A should now match both");
 				context.ReleaseEntity(entityAandB);
-				Assert.AreEqual(0, setAandB.Count, "Entity should not match, was removed.");
+				Assert.AreEqual(0, setAandB.Count, "IEntity should not match, was removed.");
 			}
 
 			// another A set should also match
 			{
-				var setA2 = context.SetContaining(e => SetManager.EntityMatchesTypes(e, typeof(AComponent)));
+				var setA2 = context.CreateSet(e => SetManager.EntityMatchesTypes(e, typeof(AComponent)));
 				foreach (var e in setA2) {
 					Assert.AreEqual(component, e.Get<AComponent>());
 				}
@@ -115,7 +121,7 @@ namespace Tests
 			var entity = context.CreateEntity("edge");
 			entity.Add(new AComponent("a"));
 			entity.Add(new BComponent());
-			var set = context.SetContaining(e => SetManager.EntityMatchesTypes(e, typeof(AComponent), typeof(BComponent)));
+			var set = context.CreateSet(e => SetManager.EntityMatchesTypes(e, typeof(AComponent), typeof(BComponent)));
 			Assert.AreEqual(1, set.Count, "Set should only have 1 entity when it matches 2 components");
 		}
 
@@ -123,7 +129,7 @@ namespace Tests
 		public void ContextSetRemoval()
 		{
 			var context = new Context();
-			var set = context.SetContaining(e => SetManager.EntityMatchesTypes(e, typeof(AComponent)));
+			var set = context.CreateSet(e => SetManager.EntityMatchesTypes(e, typeof(AComponent)));
 			var entity = context.CreateEntity("set");
 			var component = new AComponent("a1");
 			entity.Add(component);

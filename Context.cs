@@ -11,16 +11,16 @@ namespace ECSLight
 	/// For example, a game could have a 'board' context with 'piece' entities.
 	/// And a multiplayer game could have multiple 'board' contexts.
 	/// </summary>
-	public class Context : IEnumerable<Entity>
+	public class Context : IEnumerable<IEntity>
 	{
 		private readonly IEntityManager _entityManager;
 		private readonly ISetManager _setManager;
 
 		public Context()
 		{
-			var entities = new Dictionary<Entity, Dictionary<Type, IComponent>>();
-			_setManager = new SetManager(entities.Keys);
-			var componentManager = new ComponentManager(entities, _setManager);
+			var entities = new List<IEntity>();
+			_setManager = new SetManager(entities);
+			var componentManager = new ComponentManager(_setManager);
 			_entityManager = new EntityManager(entities, componentManager);
 		}
 
@@ -39,7 +39,7 @@ namespace ECSLight
 		/// Make a new entity, or recycle an unused entity.
 		/// </summary>
 		/// <returns>new empty entity</returns>
-		public Entity CreateEntity(string name = "")
+		public IEntity CreateEntity(string name = "")
 		{
 			return _entityManager.CreateEntity(name);
 		}
@@ -48,8 +48,8 @@ namespace ECSLight
 		/// End the lifecycle of the entity.
 		/// Release the entity back to be reused later.
 		/// </summary>
-		/// <param name="entity">Entity to be released.</param>
-		public void ReleaseEntity(Entity entity)
+		/// <param name="entity">IEntity to be released.</param>
+		public void ReleaseEntity(IEntity entity)
 		{
 			_entityManager.ReleaseEntity(entity);
 		}
@@ -58,15 +58,15 @@ namespace ECSLight
 		/// Returns all entities that match the predicate.
 		/// </summary>
 		/// <returns>An enumerable list of entities, that will update automatically.</returns>
-		public EntitySet SetContaining(Predicate<Entity> predicate)
+		public EntitySet CreateSet(Predicate<IEntity> predicate)
 		{
-			return _setManager.SetContaining(predicate);
+			return _setManager.CreateSet(predicate);
 		}
 
 		/// <summary>
 		/// Enumerator for all the entities.
 		/// </summary>
-		public IEnumerator<Entity> GetEnumerator()
+		public IEnumerator<IEntity> GetEnumerator()
 		{
 			return _entityManager.GetEnumerator();
 		}

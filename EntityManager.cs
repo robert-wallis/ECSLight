@@ -6,10 +6,10 @@ namespace ECSLight
 {
 	public class EntityManager : IEntityManager
 	{
-		private readonly Dictionary<Entity, Dictionary<Type, IComponent>> _entities;
+		private readonly ICollection<IEntity> _entities;
 		private readonly IComponentManager _componentManager;
 
-		public EntityManager(Dictionary<Entity, Dictionary<Type, IComponent>> entities, IComponentManager componentManager)
+		public EntityManager(ICollection<IEntity> entities, IComponentManager componentManager)
 		{
 			_entities = entities;
 			_componentManager = componentManager;
@@ -19,18 +19,18 @@ namespace ECSLight
 		/// Make a new entity, or recycle an unused entity.
 		/// </summary>
 		/// <returns>new empty entity</returns>
-		public Entity CreateEntity(string name = "")
+		public IEntity CreateEntity(string name = "")
 		{
 			var entity = new Entity(this, _componentManager, name);
-			_entities.Add(entity, new Dictionary<Type, IComponent>());
+			_entities.Add(entity);
 			return entity;
 		}
 
 		/// <summary>
 		/// Release the entity back to be reused later.
 		/// </summary>
-		/// <param name="entity">Entity to be released.</param>
-		public void ReleaseEntity(Entity entity)
+		/// <param name="entity">IEntity to be released.</param>
+		public void ReleaseEntity(IEntity entity)
 		{
 			var types = new List<Type>();
 			foreach (var component in entity) {
@@ -42,9 +42,9 @@ namespace ECSLight
 			_entities.Remove(entity);
 		}
 
-		public IEnumerator<Entity> GetEnumerator()
+		public IEnumerator<IEntity> GetEnumerator()
 		{
-			return _entities.Keys.GetEnumerator();
+			return _entities.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

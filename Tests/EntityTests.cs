@@ -58,5 +58,18 @@ namespace Tests
 			enumerable.GetEnumerator();
 			// didn't crash
 		}
+
+		[Test]
+		public void TestToString()
+		{
+			var entityManager = new StubEntityManager();
+			var componentManager = new ComponentManager(new StubSetManager());
+			var entity = new Entity(entityManager, componentManager, "entity name") {
+				new AComponent("component name")
+			};
+			var str = entity.ToString();
+			Assert.IsTrue(str.Contains("entity name"), str);
+			Assert.IsTrue(str.Contains("component name"), str);
+		}
 	}
 }

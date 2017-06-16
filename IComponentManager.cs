@@ -7,12 +7,12 @@ namespace ECSLight
 {
 	public interface IComponentManager
 	{
-		void AddComponent<TComponent>(Entity entity, TComponent component) where TComponent : class, IComponent;
-		TComponent ComponentFrom<TComponent>(Entity entity) where TComponent : class, IComponent;
-		bool ContainsComponent<TComponent>(Entity entity) where TComponent : IComponent;
-		bool ContainsComponent(Entity entity, Type type);
-		void RemoveComponent<TComponent>(Entity entity) where TComponent : class, IComponent;
-		void RemoveComponent(Entity entity, Type type);
-		IEnumerator<IComponent> GetEnumerator(Entity entity);
+		void AddComponent<TComponent>(IEntity entity, TComponent component) where TComponent : class, IComponent;
+		TComponent ComponentFrom<TComponent>(IEntity entity) where TComponent : class, IComponent;
+		bool ContainsComponent<TComponent>(IEntity entity) where TComponent : IComponent;
+		bool ContainsComponent(IEntity entity, Type type);
+		void RemoveComponent<TComponent>(IEntity entity) where TComponent : class, IComponent;
+		void RemoveComponent(IEntity entity, Type type);
+		IEnumerator<IComponent> GetEnumerator(IEntity entity);
 	}
 }

@@ -7,17 +7,23 @@ namespace Tests.Stubs
 {
 	internal class StubSetManager : ISetManager
 	{
-		public EntitySet SetContainingReturn;
-		public Predicate<Entity> SetContainingPredicate;
-		public Entity UpdateEntityMembershipEntity;
+		public EntitySet CreateSetReturn;
+		public Predicate<IEntity> CreateSetPredicate;
+		public EntitySet RemoveSetSet;
+		public IEntity UpdateEntityMembershipEntity;
 
-		public EntitySet SetContaining(Predicate<Entity> predicate)
+		public EntitySet CreateSet(Predicate<IEntity> predicate)
 		{
-			SetContainingPredicate = predicate;
-			return SetContainingReturn;
+			CreateSetPredicate = predicate;
+			return CreateSetReturn;
 		}
 
-		public void UpdateEntityMembership(Entity entity)
+		public void RemoveSet(EntitySet set)
+		{
+			RemoveSetSet = set;
+		}
+
+		public void UpdateEntityMembership(IEntity entity)
 		{
 			UpdateEntityMembershipEntity = entity;
 		}

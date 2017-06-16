@@ -8,36 +8,38 @@ namespace Tests.Stubs
 {
 	internal class StubComponentManager : IComponentManager
 	{
-		public void AddComponent<TComponent>(Entity entity, TComponent component) where TComponent : class, IComponent
+		private static IEnumerator<IComponent> EmptyEnumerator = new List<IComponent>().GetEnumerator();
+
+		public void AddComponent<TComponent>(IEntity entity, TComponent component) where TComponent : class, IComponent
 		{
 		}
 
-		public TComponent ComponentFrom<TComponent>(Entity entity) where TComponent : class, IComponent
+		public TComponent ComponentFrom<TComponent>(IEntity entity) where TComponent : class, IComponent
 		{
 			return null;
 		}
 
-		public bool ContainsComponent<TComponent>(Entity entity) where TComponent : IComponent
+		public bool ContainsComponent<TComponent>(IEntity entity) where TComponent : IComponent
 		{
 			return false;
 		}
 
-		public bool ContainsComponent(Entity entity, Type type)
+		public bool ContainsComponent(IEntity entity, Type type)
 		{
 			return false;
 		}
 
-		public void RemoveComponent<TComponent>(Entity entity) where TComponent : class, IComponent
+		public void RemoveComponent<TComponent>(IEntity entity) where TComponent : class, IComponent
 		{
 		}
 
-		public void RemoveComponent(Entity entity, Type type)
+		public void RemoveComponent(IEntity entity, Type type)
 		{
 		}
 
-		public IEnumerator<IComponent> GetEnumerator(Entity entity)
+		public IEnumerator<IComponent> GetEnumerator(IEntity entity)
 		{
-			return null;
+			return EmptyEnumerator;
 		}
 	}
 }

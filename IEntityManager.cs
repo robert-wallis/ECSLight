@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace ECSLight
 {
-	public interface IEntityManager : IEnumerable<Entity>
+	public interface IEntityManager : IEnumerable<IEntity>
 	{
-		Entity CreateEntity(string name = "");
-		void ReleaseEntity(Entity entity);
+		IEntity CreateEntity(string name = "");
+		void ReleaseEntity(IEntity entity);
 	}
 }

@@ -7,13 +7,13 @@ using System.Collections.Generic;
 namespace ECSLight
 {
 	/// <summary>
-	/// An Entity represents a single object that contains components.
+	/// An IEntity represents a single object that contains components.
 	/// It's really just an interface to the ComponentManager for a single entity.
 	/// Entities are not meant to be subclassed, please use
 	///   Components to specify fields (data),
 	///   and Systems to specify functions (behavior).
 	/// </summary>
-	public class Entity : IEnumerable<IComponent>
+	public class Entity : IEntity
 	{
 		private readonly IEntityManager _entityManager;
 		private readonly IComponentManager _componentManager;

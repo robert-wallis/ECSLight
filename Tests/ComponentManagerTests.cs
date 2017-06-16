@@ -1,7 +1,6 @@
 ﻿// Copyright (C) 2017 Robert A. Wallis, All Rights Reserved.
 
-using System;
-using System.Collections.Generic;
+using System.Collections;
 using ECSLight;
 using NUnit.Framework;
 using Tests.Stubs;
@@ -11,27 +10,40 @@ namespace Tests
 	[TestFixture]
 	public class ComponentManagerTests
 	{
-		IEntityManager _stubEntityManager = new StubEntityManager();
+		readonly IEntityManager _stubEntityManager = new StubEntityManager();
 
 		[Test]
 		public void CoverEntityComponentsUnInitialized()
 		{
-			var entities = new Dictionary<Entity, Dictionary<Type, IComponent>>();
-			var componentManager = new ComponentManager(entities, new StubSetManager());
-			var entity = new Entity(_stubEntityManager, componentManager);
-			entity.Add(new AComponent("a"));
+			var componentManager = new ComponentManager(new StubSetManager());
+			var entity = new Entity(_stubEntityManager, componentManager) {
+				new AComponent("a")
+			};
 			Assert.IsNotNull(componentManager.ComponentFrom<AComponent>(entity));
 		}
 
 		[Test]
 		public void CoverEntityNotInEntities()
 		{
-			var componentManager = new ComponentManager(new Dictionary<Entity, Dictionary<Type, IComponent>>(), new StubSetManager());
-			var otherManager = new ComponentManager(new Dictionary<Entity, Dictionary<Type, IComponent>>(), new StubSetManager());
+			var componentManager = new ComponentManager(new StubSetManager());
+			var otherManager = new ComponentManager(new StubSetManager());
 			var entity = new Entity(_stubEntityManager, otherManager);
 			Assert.IsFalse(componentManager.ContainsComponent(entity, typeof(AComponent)));
 			Assert.IsNull(componentManager.ComponentFrom<AComponent>(entity));
 			componentManager.RemoveComponent<AComponent>(entity);
+		}
+
+		[Test]
+		public void CoverIEnumerable()
+		{
+			var componentManager = new ComponentManager(new StubSetManager());
+			using (var enumerator = componentManager.GetEnumerator(new StubEntity())) {
+				Assert.IsFalse(enumerator.MoveNext());
+			}
+			// check again for dispose crash
+			using (var enumerator = componentManager.GetEnumerator(new StubEntity())) {
+				Assert.IsFalse(enumerator.MoveNext());
+			}
 		}
 	}
 }

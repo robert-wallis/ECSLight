@@ -6,25 +6,25 @@ using System.Collections.Generic;
 
 namespace ECSLight
 {
-	public class EntitySet : ICollection<Entity>
+	public class EntitySet : ICollection<IEntity>
 	{
-		public Predicate<Entity> Predicate { get; }
+		public Predicate<IEntity> Predicate { get; }
 		public int Count => _entities.Count;
-		bool ICollection<Entity>.IsReadOnly => false;
+		bool ICollection<IEntity>.IsReadOnly => false;
 
-		private readonly HashSet<Entity> _entities = new HashSet<Entity>();
+		private readonly HashSet<IEntity> _entities = new HashSet<IEntity>();
 
-		public EntitySet(Predicate<Entity> predicate)
+		public EntitySet(Predicate<IEntity> predicate)
 		{
 			Predicate = predicate;
 		}
 
-		public bool Matches(Entity entity)
+		public bool Matches(IEntity entity)
 		{
 			return Predicate.Invoke(entity);
 		}
 
-		public void Add(Entity item)
+		public void Add(IEntity item)
 		{
 			_entities.Add(item);
 		}
@@ -34,22 +34,22 @@ namespace ECSLight
 			_entities.Clear();
 		}
 
-		public bool Contains(Entity item)
+		public bool Contains(IEntity item)
 		{
 			return _entities.Contains(item);
 		}
 
-		public bool Remove(Entity item)
+		public bool Remove(IEntity item)
 		{
 			return _entities.Remove(item);
 		}
 
-		public IEnumerator<Entity> GetEnumerator()
+		public IEnumerator<IEntity> GetEnumerator()
 		{
 			return _entities.GetEnumerator();
 		}
 
-		void ICollection<Entity>.CopyTo(Entity[] array, int arrayIndex)
+		void ICollection<IEntity>.CopyTo(IEntity[] array, int arrayIndex)
 		{
 			_entities.CopyTo(array, arrayIndex);
 		}

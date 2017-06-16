@@ -11,31 +11,49 @@ namespace ECSLight
 	/// </summary>
 	public class SetManager : ISetManager
 	{
-		private readonly IEnumerable<Entity> _entities;
-		private readonly Dictionary<Predicate<Entity>, EntitySet> _entitySets;
+		private readonly IEnumerable<IEntity> _entities;
+		private readonly Dictionary<Predicate<IEntity>, EntitySet> _entitySets;
 
-		public SetManager(IEnumerable<Entity> entities)
+		public SetManager(IEnumerable<IEntity> entities)
 		{
 			_entities = entities;
-			_entitySets = new Dictionary<Predicate<Entity>, EntitySet>();
+			_entitySets = new Dictionary<Predicate<IEntity>, EntitySet>();
 		}
 
 		/// <summary>
-		/// Returns all entitySet that have the specified components.
+		/// Makes a new set and registers it for updating membership later.
 		/// </summary>
 		/// <returns>An enumerable list of entitySet, that will update automatically.</returns>
-		public EntitySet SetContaining(Predicate<Entity> predicate)
+		public EntitySet CreateSet(Predicate<IEntity> predicate)
 		{
-			if (_entitySets.ContainsKey(predicate))
-				return _entitySets[predicate];
-			var entities = CreateEntitySet(predicate);
-			return entities;
+			var entitySet = new EntitySet(predicate);
+			_entitySets[predicate] = entitySet;
+			foreach (var entity in _entities) {
+				if (entitySet.Matches(entity))
+					entitySet.Add(entity);
+			}
+			return entitySet;
+		}
+
+		/// <summary>
+		/// Unregisters a set so it will no longer get membership updates.
+		/// </summary>
+		public void RemoveSet(EntitySet set)
+		{
+			var keys = new List<Predicate<IEntity>>();
+			foreach (var kvp in _entitySets) {
+				if (kvp.Value == set)
+					keys.Add(kvp.Key);
+			}
+			foreach (var key in keys) {
+				_entitySets.Remove(key);
+			}
 		}
 
 		/// <summary>
 		/// Add entity to all matching sets, remove from any unmatching sets.
 		/// </summary>
-		public void UpdateEntityMembership(Entity entity)
+		public void UpdateEntityMembership(IEntity entity)
 		{
 			foreach (var kvp in _entitySets) {
 				var set = kvp.Value;
@@ -50,7 +68,7 @@ namespace ECSLight
 		/// Checks if the entity should be in the types list.
 		/// </summary>
 		/// <returns>true if the entity matches</returns>
-		public static bool EntityMatchesTypes(Entity entity, params Type[] types)
+		public static bool EntityMatchesTypes(IEntity entity, params Type[] types)
 		{
 			var all = false;
 			foreach (var type in types) {
@@ -62,21 +80,6 @@ namespace ECSLight
 				}
 			}
 			return all;
-		}
-
-		/// <summary>
-		/// Make a new entity set.
-		/// </summary>
-		/// <returns></returns>
-		private EntitySet CreateEntitySet(Predicate<Entity> predicate)
-		{
-			var entitySet = new EntitySet(predicate);
-			_entitySets[predicate] = entitySet;
-			foreach (var entity in _entities) {
-				if (entitySet.Matches(entity))
-					entitySet.Add(entity);
-			}
-			return entitySet;
 		}
 	}
 }
