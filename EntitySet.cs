@@ -10,6 +10,8 @@ namespace ECSLight
 	{
 		public Predicate<IEntity> Predicate { get; }
 		public int Count => _entities.Count;
+		public event Action<IEntity> OnAdded;
+		public event Action<IEntity> OnRemoved;
 		bool ICollection<IEntity>.IsReadOnly => false;
 
 		private readonly HashSet<IEntity> _entities = new HashSet<IEntity>();
@@ -27,10 +29,14 @@ namespace ECSLight
 		public void Add(IEntity item)
 		{
 			_entities.Add(item);
+			OnAdded?.Invoke(item);
 		}
 
 		public void Clear()
 		{
+			foreach(var entity in _entities) {
+				OnRemoved?.Invoke(entity);
+			}
 			_entities.Clear();
 		}
 
@@ -41,7 +47,10 @@ namespace ECSLight
 
 		public bool Remove(IEntity item)
 		{
-			return _entities.Remove(item);
+			var hadEntity = _entities.Remove(item);
+			if (hadEntity)
+				OnRemoved?.Invoke(item);
+			return hadEntity;
 		}
 
 		public IEnumerator<IEntity> GetEnumerator()

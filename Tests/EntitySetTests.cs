@@ -28,6 +28,37 @@ namespace Tests
 		}
 
 		[Test]
+		public void Events()
+		{
+			var addCount = 0;
+			var removeCount = 0;
+			var entity = new StubEntity();
+			var entitySet = new EntitySet(e => true);
+			entitySet.OnAdded += e => {
+				Assert.AreSame(entity, e);
+				addCount++;
+			};
+			entitySet.OnRemoved += e => {
+				Assert.AreSame(entity, e);
+				removeCount++;
+			};
+			Assert.AreEqual(0, addCount);
+			Assert.AreEqual(0, removeCount);
+			entitySet.Add(entity);
+			Assert.AreEqual(1, addCount);
+			Assert.AreEqual(0, removeCount);
+			entitySet.Remove(entity);
+			Assert.AreEqual(1, addCount);
+			Assert.AreEqual(1, removeCount);
+			entitySet.Add(entity);
+			Assert.AreEqual(2, addCount);
+			Assert.AreEqual(1, removeCount);
+			entitySet.Clear();
+			Assert.AreEqual(2, addCount);
+			Assert.AreEqual(2, removeCount);
+		}
+
+		[Test]
 		public void CoverageICollection()
 		{
 			var entitySet = new EntitySet(e => true);
