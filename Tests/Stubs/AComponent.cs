@@ -6,16 +6,16 @@ namespace Tests.Stubs
 {
 	internal class AComponent : IComponent
 	{
-		private readonly string _name;
+		public string Name;
 
 		public AComponent(string name)
 		{
-			_name = name;
+			Name = name;
 		}
 
 		public override string ToString()
 		{
-			return _name;
+			return Name;
 		}
 	}
 }

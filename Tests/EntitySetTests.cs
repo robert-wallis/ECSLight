@@ -59,6 +59,20 @@ namespace Tests
 		}
 
 		[Test]
+		public void EventUselessBox()
+		{
+			var context = new Context();
+			var entity = context.CreateEntity("test entity");
+			var set = context.CreateSet(e => e.Contains<AComponent>());
+			set.OnRemoved += e => {
+				e.Add(new AComponent("back on"));
+			};
+			entity.Add(new AComponent("first on"));
+			entity.Remove<AComponent>();
+			Assert.AreEqual("back on", entity.Get<AComponent>().Name, "A should be replaced with inner");
+		}
+
+		[Test]
 		public void CoverageICollection()
 		{
 			var entitySet = new EntitySet(e => true);
