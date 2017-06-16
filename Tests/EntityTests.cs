@@ -48,6 +48,7 @@ namespace Tests
 			// remove
 			e.Remove<AComponent>();
 			Assert.IsFalse(e.Contains<AComponent>());
+			Assert.IsNull(e.Get<AComponent>());
 		}
 
 		[Test]

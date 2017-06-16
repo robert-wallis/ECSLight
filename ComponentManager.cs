@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 
 namespace ECSLight
 {
@@ -71,6 +72,8 @@ namespace ECSLight
 		public TComponent ComponentFrom<TComponent>(IEntity entity) where TComponent : class, IComponent
 		{
 			if (!_components.ContainsKey(entity))
+				return null;
+			if (!_components[entity].ContainsKey(typeof(TComponent)))
 				return null;
 			return _components[entity][typeof(TComponent)] as TComponent;
 		}
