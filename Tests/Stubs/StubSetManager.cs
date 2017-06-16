@@ -8,17 +8,19 @@ namespace Tests.Stubs
 {
 	internal class StubSetManager : ISetManager
 	{
-		public void AddEntityToAllSets(Entity entity)
+		public HashSet<Entity> SetContainingReturn;
+		public Predicate<Entity> SetContainingPredicate;
+		public Entity UpdateEntityMembershipEntity;
+
+		public HashSet<Entity> SetContaining(Predicate<Entity> predicate)
 		{
+			SetContainingPredicate = predicate;
+			return SetContainingReturn;
 		}
 
-		public HashSet<Entity> SetContaining(params Type[] types)
+		public void UpdateEntityMembership(Entity entity)
 		{
-			return null;
-		}
-
-		public void RemoveEntityFromSets(Entity entity, Type type)
-		{
+			UpdateEntityMembershipEntity = entity;
 		}
 	}
 }

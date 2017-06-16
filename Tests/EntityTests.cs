@@ -11,6 +11,15 @@ namespace Tests
 	public class EntityTests
 	{
 		[Test]
+		public void CreateRemove()
+		{
+			var componentManager = new StubComponentManager();
+			var entityManager = new StubEntityManager();
+			var entity = new Entity(entityManager, componentManager);
+			entity.Release();
+		}
+
+		[Test]
 		public void Components()
 		{
 			var context = new Context();
@@ -44,7 +53,7 @@ namespace Tests
 		[Test]
 		public void CoverIEnumerable()
 		{
-			var entity = new Entity(new StubComponentManager());
+			var entity = new Entity(new StubEntityManager(), new StubComponentManager());
 			var enumerable = (IEnumerable) entity;
 			enumerable.GetEnumerator();
 			// didn't crash

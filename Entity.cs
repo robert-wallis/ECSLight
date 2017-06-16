@@ -15,6 +15,7 @@ namespace ECSLight
 	/// </summary>
 	public class Entity : IEnumerable<IComponent>
 	{
+		private readonly IEntityManager _entityManager;
 		private readonly IComponentManager _componentManager;
 		private readonly string _name;
 
@@ -23,10 +24,19 @@ namespace ECSLight
 		/// Please use Components for data, and Systems for behavior.
 		/// Also to avoid GC, entities are pooled by Context.
 		/// </summary>
-		public Entity(IComponentManager componentManager, string name = "")
+		public Entity(IEntityManager entityManager, IComponentManager componentManager, string name = "")
 		{
+			_entityManager = entityManager;
 			_componentManager = componentManager;
 			_name = name;
+		}
+
+		/// <summary>
+		/// End the lifecycle of this entity.
+		/// </summary>
+		public void Release()
+		{
+			_entityManager.ReleaseEntity(this);
 		}
 
 		/// <summary>

@@ -57,7 +57,7 @@ namespace Tests
 			var entity = context.CreateEntity("original");
 			var component = new AComponent("a1");
 			// set doesn't match until component is attached
-			var setA = context.SetContaining(typeof(AComponent));
+			var setA = context.SetContaining(e => SetManager.EntityMatchesTypes(e, typeof(AComponent)));
 			{
 				Assert.AreEqual(0, setA.Count);
 				entity.Add(component);
@@ -71,7 +71,7 @@ namespace Tests
 			// B doesn't match 'entity' because it doesn't have a BComponent.
 			{
 				Assert.AreEqual(1, setA.Count);
-				var setB = context.SetContaining(typeof(BComponent));
+				var setB = context.SetContaining(e => SetManager.EntityMatchesTypes(e, typeof(BComponent)));
 				Assert.AreEqual(0, setB.Count);
 			}
 
@@ -79,7 +79,7 @@ namespace Tests
 			{
 				Assert.AreEqual(1, setA.Count);
 				Assert.IsFalse(entity.Contains<BComponent>());
-				var setAandB = context.SetContaining(typeof(AComponent), typeof(BComponent));
+				var setAandB = context.SetContaining(e => SetManager.EntityMatchesTypes(e, typeof(AComponent), typeof(BComponent)));
 				Assert.AreNotSame(setA, setAandB);
 				Assert.AreEqual(0, setAandB.Count, "Entity should not match, has no BComponent");
 				var entityAandB = context.CreateEntity("ab");
@@ -93,7 +93,7 @@ namespace Tests
 
 			// another A set should also match
 			{
-				var setA2 = context.SetContaining(typeof(AComponent));
+				var setA2 = context.SetContaining(e => SetManager.EntityMatchesTypes(e, typeof(AComponent)));
 				foreach (var e in setA2) {
 					Assert.AreEqual(component, e.Get<AComponent>());
 				}
@@ -115,7 +115,7 @@ namespace Tests
 			var entity = context.CreateEntity("edge");
 			entity.Add(new AComponent("a"));
 			entity.Add(new BComponent());
-			var set = context.SetContaining(typeof(AComponent), typeof(BComponent));
+			var set = context.SetContaining(e => SetManager.EntityMatchesTypes(e, typeof(AComponent), typeof(BComponent)));
 			Assert.AreEqual(1, set.Count, "Set should only have 1 entity when it matches 2 components");
 		}
 
@@ -123,7 +123,7 @@ namespace Tests
 		public void ContextSetRemoval()
 		{
 			var context = new Context();
-			var set = context.SetContaining(typeof(AComponent));
+			var set = context.SetContaining(e => SetManager.EntityMatchesTypes(e, typeof(AComponent)));
 			var entity = context.CreateEntity("set");
 			var component = new AComponent("a1");
 			entity.Add(component);

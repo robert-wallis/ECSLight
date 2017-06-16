@@ -13,16 +13,26 @@ namespace ECSLight
 	/// </summary>
 	public class Context : IEnumerable<Entity>
 	{
-		private readonly Dictionary<Entity, Dictionary<Type, IComponent>> _allEntities;
-		private readonly SetManager _setManager;
-		private readonly EntityManager _entityManager;
+		private readonly IEntityManager _entityManager;
+		private readonly ISetManager _setManager;
 
-		public Context(int capacity = 128)
+		public Context()
 		{
-			_allEntities = new Dictionary<Entity, Dictionary<Type, IComponent>>(capacity);
-			_setManager = new SetManager(_allEntities);
-			var componentManager = new ComponentManager(_allEntities, _setManager);
-			_entityManager = new EntityManager(_allEntities, componentManager);
+			var entities = new Dictionary<Entity, Dictionary<Type, IComponent>>();
+			_setManager = new SetManager(entities.Keys);
+			var componentManager = new ComponentManager(entities, _setManager);
+			_entityManager = new EntityManager(entities, componentManager);
+		}
+
+		/// <summary>
+		/// Dependency Constructor.  For full control of context.
+		/// </summary>
+		/// <param name="entityManager">entity manager</param>
+		/// <param name="setManager">entity set manager</param>
+		public Context(IEntityManager entityManager, ISetManager setManager)
+		{
+			_entityManager = entityManager;
+			_setManager = setManager;
 		}
 
 		/// <summary>
@@ -35,6 +45,7 @@ namespace ECSLight
 		}
 
 		/// <summary>
+		/// End the lifecycle of the entity.
 		/// Release the entity back to be reused later.
 		/// </summary>
 		/// <param name="entity">Entity to be released.</param>
@@ -44,12 +55,12 @@ namespace ECSLight
 		}
 
 		/// <summary>
-		/// Returns all entities that have the specified components.
+		/// Returns all entities that match the predicate.
 		/// </summary>
 		/// <returns>An enumerable list of entities, that will update automatically.</returns>
-		public HashSet<Entity> SetContaining(params Type[] types)
+		public HashSet<Entity> SetContaining(Predicate<Entity> predicate)
 		{
-			return _setManager.SetContaining(types);
+			return _setManager.SetContaining(predicate);
 		}
 
 		/// <summary>
@@ -57,7 +68,7 @@ namespace ECSLight
 		/// </summary>
 		public IEnumerator<Entity> GetEnumerator()
 		{
-			return _allEntities.Keys.GetEnumerator();
+			return _entityManager.GetEnumerator();
 		}
 
 		/// <summary>

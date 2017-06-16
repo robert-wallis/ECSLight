@@ -57,6 +57,7 @@
     <Compile Include="EntityTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stubs\StubComponentManager.cs" />
+    <Compile Include="Stubs\StubEntityManager.cs" />
     <Compile Include="Stubs\StubSetManager.cs" />
   </ItemGroup>
   <ItemGroup>

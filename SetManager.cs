@@ -11,82 +11,47 @@ namespace ECSLight
 	/// </summary>
 	public class SetManager : ISetManager
 	{
-		private readonly Dictionary<Entity, Dictionary<Type, IComponent>> _entities;
-		private readonly Dictionary<HashSet<Type>, HashSet<Entity>> _entitySets;
+		private readonly IEnumerable<Entity> _entities;
+		private readonly Dictionary<Predicate<Entity>, HashSet<Entity>> _entitySets;
 
-		public SetManager(Dictionary<Entity, Dictionary<Type, IComponent>> entities)
+		public SetManager(IEnumerable<Entity> entities)
 		{
 			_entities = entities;
-			_entitySets = new Dictionary<HashSet<Type>, HashSet<Entity>>();
+			_entitySets = new Dictionary<Predicate<Entity>, HashSet<Entity>>();
 		}
 
 		/// <summary>
 		/// Returns all entitySet that have the specified components.
 		/// </summary>
 		/// <returns>An enumerable list of entitySet, that will update automatically.</returns>
-		public HashSet<Entity> SetContaining(params Type[] types)
+		public HashSet<Entity> SetContaining(Predicate<Entity> predicate)
 		{
-			var matchTypes = new HashSet<Type>(types);
-			foreach (var kvp in _entitySets) {
-				var matcher = kvp.Key;
-				if (matcher.SetEquals(matchTypes)) {
-					return kvp.Value;
-				}
-			}
-			var entities = CreateEntitySet(matchTypes);
+			if (_entitySets.ContainsKey(predicate))
+				return _entitySets[predicate];
+			var entities = CreateEntitySet(predicate);
 			return entities;
 		}
 
 		/// <summary>
-		/// add entity to all matching sets 
+		/// Add entity to all matching sets, remove from any unmatching sets.
 		/// </summary>
-		public void AddEntityToAllSets(Entity entity)
+		public void UpdateEntityMembership(Entity entity)
 		{
 			foreach (var kvp in _entitySets) {
-				var types = kvp.Key;
-				var entities = kvp.Value;
-				if (EntityMatchesTypes(entity, types))
-					entities.Add(entity);
+				var predicate = kvp.Key;
+				var set = kvp.Value;
+				if (predicate.Invoke(entity))
+					set.Add(entity);
 				else
-					entities.Remove(entity);
+					set.Remove(entity);
 			}
-		}
-
-		/// <summary>
-		/// remove entity from any matchers that it no longer qualifies for
-		/// </summary>
-		public void RemoveEntityFromSets(Entity entity, Type type)
-		{
-			foreach (var kvp in _entitySets) {
-				var types = kvp.Key;
-				var entities = kvp.Value;
-				if (types.Contains(type)) {
-					entities.Remove(entity);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Make a new entity set.
-		/// </summary>
-		/// <param name="matchTypes"></param>
-		/// <returns></returns>
-		private HashSet<Entity> CreateEntitySet(HashSet<Type> matchTypes)
-		{
-			var entitySet = new HashSet<Entity>();
-			_entitySets[matchTypes] = entitySet;
-			foreach (var kvp in _entities) {
-				if (EntityMatchesTypes(kvp.Key, matchTypes))
-					entitySet.Add(kvp.Key);
-			}
-			return entitySet;
 		}
 
 		/// <summary>
 		/// Checks if the entity should be in the types list.
 		/// </summary>
 		/// <returns>true if the entity matches</returns>
-		private bool EntityMatchesTypes(Entity entity, HashSet<Type> types)
+		public static bool EntityMatchesTypes(Entity entity, params Type[] types)
 		{
 			var all = false;
 			foreach (var type in types) {
@@ -98,6 +63,21 @@ namespace ECSLight
 				}
 			}
 			return all;
+		}
+
+		/// <summary>
+		/// Make a new entity set.
+		/// </summary>
+		/// <returns></returns>
+		private HashSet<Entity> CreateEntitySet(Predicate<Entity> predicate)
+		{
+			var entitySet = new HashSet<Entity>();
+			_entitySets[predicate] = entitySet;
+			foreach (var entity in _entities) {
+				if (predicate.Invoke(entity))
+					entitySet.Add(entity);
+			}
+			return entitySet;
 		}
 	}
 }

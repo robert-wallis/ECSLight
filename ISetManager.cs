@@ -7,8 +7,7 @@ namespace ECSLight
 {
 	public interface ISetManager
 	{
-		void AddEntityToAllSets(Entity entity);
-		HashSet<Entity> SetContaining(params Type[] types);
-		void RemoveEntityFromSets(Entity entity, Type type);
+		HashSet<Entity> SetContaining(Predicate<Entity> predicate);
+		void UpdateEntityMembership(Entity entity);
 	}
 }

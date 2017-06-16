@@ -11,12 +11,14 @@ namespace Tests
 	[TestFixture]
 	public class ComponentManagerTests
 	{
+		IEntityManager _stubEntityManager = new StubEntityManager();
+
 		[Test]
 		public void CoverEntityComponentsUnInitialized()
 		{
 			var entities = new Dictionary<Entity, Dictionary<Type, IComponent>>();
 			var componentManager = new ComponentManager(entities, new StubSetManager());
-			var entity = new Entity(componentManager);
+			var entity = new Entity(_stubEntityManager, componentManager);
 			entity.Add(new AComponent("a"));
 			Assert.IsNotNull(componentManager.ComponentFrom<AComponent>(entity));
 		}
@@ -26,7 +28,7 @@ namespace Tests
 		{
 			var componentManager = new ComponentManager(new Dictionary<Entity, Dictionary<Type, IComponent>>(), new StubSetManager());
 			var otherManager = new ComponentManager(new Dictionary<Entity, Dictionary<Type, IComponent>>(), new StubSetManager());
-			var entity = new Entity(otherManager);
+			var entity = new Entity(_stubEntityManager, otherManager);
 			Assert.IsFalse(componentManager.ContainsComponent(entity, typeof(AComponent)));
 			Assert.IsNull(componentManager.ComponentFrom<AComponent>(entity));
 			componentManager.RemoveComponent<AComponent>(entity);

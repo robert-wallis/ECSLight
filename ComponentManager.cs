@@ -32,7 +32,7 @@ namespace ECSLight
 			var replaceComponent = _entities[entity].ContainsKey(type);
 			_entities[entity][type] = component;
 			if (!replaceComponent)
-				_setManager.AddEntityToAllSets(entity);
+				_setManager.UpdateEntityMembership(entity);
 		}
 
 		/// <summary>
@@ -95,7 +95,7 @@ namespace ECSLight
 			if (!_entities.ContainsKey(entity))
 				return;
 			_entities[entity].Remove(type);
-			_setManager.RemoveEntityFromSets(entity, type);
+			_setManager.UpdateEntityMembership(entity);
 		}
 
 		/// <summary>

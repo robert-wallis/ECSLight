@@ -46,6 +46,7 @@
     <Compile Include="Entity.cs" />
     <Compile Include="EntityManager.cs" />
     <Compile Include="IComponentManager.cs" />
+    <Compile Include="IEntityManager.cs" />
     <Compile Include="ISetManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetManager.cs" />

@@ -1,9 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace ECSLight
 {
-	public class EntityManager
+	public class EntityManager : IEntityManager
 	{
 		private readonly Dictionary<Entity, Dictionary<Type, IComponent>> _entities;
 		private readonly IComponentManager _componentManager;
@@ -20,7 +21,7 @@ namespace ECSLight
 		/// <returns>new empty entity</returns>
 		public Entity CreateEntity(string name = "")
 		{
-			var entity = new Entity(_componentManager, name);
+			var entity = new Entity(this, _componentManager, name);
 			_entities.Add(entity, new Dictionary<Type, IComponent>());
 			return entity;
 		}
@@ -39,6 +40,16 @@ namespace ECSLight
 				_componentManager.RemoveComponent(entity, type);
 			}
 			_entities.Remove(entity);
+		}
+
+		public IEnumerator<Entity> GetEnumerator()
+		{
+			return _entities.Keys.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 	}
 }
