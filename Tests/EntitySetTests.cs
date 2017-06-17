@@ -34,11 +34,13 @@ namespace Tests
 			var removeCount = 0;
 			var entity = new StubEntity();
 			var entitySet = new EntitySet(e => true);
-			entitySet.OnAdded += e => {
+			entitySet.OnAdded += e =>
+			{
 				Assert.AreSame(entity, e);
 				addCount++;
 			};
-			entitySet.OnRemoved += e => {
+			entitySet.OnRemoved += e =>
+			{
 				Assert.AreSame(entity, e);
 				removeCount++;
 			};
@@ -61,15 +63,23 @@ namespace Tests
 		[Test]
 		public void EventUselessBox()
 		{
-			var context = new Context();
-			var entity = context.CreateEntity("test entity");
-			var set = context.CreateSet(e => e.Contains<AComponent>());
-			set.OnRemoved += e => {
-				e.Add(new AComponent("back on"));
-			};
-			entity.Add(new AComponent("first on"));
-			entity.Remove<AComponent>();
-			Assert.AreEqual("back on", entity.Get<AComponent>().Name, "A should be replaced with inner");
+			{
+				var context = new Context();
+				var entity = context.CreateEntity("add remove");
+				var set = context.CreateSet(e => e.Contains<AComponent>());
+				set.OnAdded += e => { e.Remove<AComponent>(); };
+				entity.Add(new AComponent("on"));
+				Assert.IsFalse(entity.Contains<AComponent>(), "Set should remove A components.");
+			}
+			{
+				var context = new Context();
+				var entity = context.CreateEntity("test entity");
+				var set = context.CreateSet(e => e.Contains<AComponent>());
+				set.OnRemoved += e => { e.Add(new AComponent("back on")); };
+				entity.Add(new AComponent("first on"));
+				entity.Remove<AComponent>();
+				Assert.AreEqual("back on", entity.Get<AComponent>().Name, "A should be replaced with inner");
+			}
 		}
 
 		[Test]
@@ -84,18 +94,18 @@ namespace Tests
 
 			// GetEnumerator
 			Assert.AreSame(entity, entitySet.First());
-			var enumerable = (IEnumerable)entitySet;
+			var enumerable = (IEnumerable) entitySet;
 			var enumerator = enumerable.GetEnumerator();
 			Assert.IsTrue(enumerator.MoveNext());
 			Assert.AreSame(entity, enumerator.Current);
 
 			// CopyTo
 			var array = new IEntity[1];
-			((ICollection<IEntity>)entitySet).CopyTo(array, 0);
+			((ICollection<IEntity>) entitySet).CopyTo(array, 0);
 			Assert.AreSame(entity, array.First());
 
 			// IsReadOnly
-			var collection = (ICollection<IEntity>)entitySet;
+			var collection = (ICollection<IEntity>) entitySet;
 			Assert.False(collection.IsReadOnly);
 		}
 	}
