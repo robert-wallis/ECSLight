@@ -25,15 +25,15 @@ namespace ECSLight
 			return Predicate.Invoke(entity);
 		}
 
+		public bool Contains(IEntity item)
+		{
+			return _entities.Contains(item);
+		}
+
 		public void Add(IEntity item, IComponent old = null, IComponent component = null)
 		{
 			_entities.Add(item);
 			OnAdded?.Invoke(item, old, component);
-		}
-
-		public bool Contains(IEntity item)
-		{
-			return _entities.Contains(item);
 		}
 
 		public bool Remove(IEntity item, IComponent old, IComponent component = null)
