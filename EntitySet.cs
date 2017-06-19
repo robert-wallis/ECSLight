@@ -6,13 +6,12 @@ using System.Collections.Generic;
 
 namespace ECSLight
 {
-	public class EntitySet : ICollection<IEntity>
+	public class EntitySet : IEnumerable<IEntity>
 	{
 		public Predicate<IEntity> Predicate { get; }
 		public int Count => _entities.Count;
-		public event Action<IEntity> OnAdded;
-		public event Action<IEntity> OnRemoved;
-		bool ICollection<IEntity>.IsReadOnly => false;
+		public event Action<IEntity, IComponent, IComponent> OnAdded;
+		public event Action<IEntity, IComponent, IComponent> OnRemoved;
 
 		private readonly HashSet<IEntity> _entities = new HashSet<IEntity>();
 
@@ -26,18 +25,10 @@ namespace ECSLight
 			return Predicate.Invoke(entity);
 		}
 
-		public void Add(IEntity item)
+		public void Add(IEntity item, IComponent old = null, IComponent component = null)
 		{
 			_entities.Add(item);
-			OnAdded?.Invoke(item);
-		}
-
-		public void Clear()
-		{
-			foreach(var entity in _entities) {
-				OnRemoved?.Invoke(entity);
-			}
-			_entities.Clear();
+			OnAdded?.Invoke(item, old, component);
 		}
 
 		public bool Contains(IEntity item)
@@ -45,22 +36,17 @@ namespace ECSLight
 			return _entities.Contains(item);
 		}
 
-		public bool Remove(IEntity item)
+		public bool Remove(IEntity item, IComponent old, IComponent component = null)
 		{
 			var hadEntity = _entities.Remove(item);
 			if (hadEntity)
-				OnRemoved?.Invoke(item);
+				OnRemoved?.Invoke(item, old, component);
 			return hadEntity;
 		}
 
 		public IEnumerator<IEntity> GetEnumerator()
 		{
 			return _entities.GetEnumerator();
-		}
-
-		void ICollection<IEntity>.CopyTo(IEntity[] array, int arrayIndex)
-		{
-			_entities.CopyTo(array, arrayIndex);
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

@@ -9,14 +9,16 @@ namespace Tests.Stubs
 {
 	internal class StubEntity : IEntity
 	{
+		private static IEnumerator<IComponent> Empty = new List<IComponent>().GetEnumerator();
+
 		public IEnumerator<IComponent> GetEnumerator()
 		{
-			return null;
+			return Empty;
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return null;
+			return Empty;
 		}
 
 		public void Release()

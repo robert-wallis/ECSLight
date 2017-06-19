@@ -8,6 +8,8 @@ namespace ECSLight
 	{
 		EntitySet CreateSet(Predicate<IEntity> predicate);
 		void RemoveSet(EntitySet set);
-		void UpdateEntityMembership(IEntity entity);
+		void ComponentAdded(IEntity entity, IComponent component);
+		void ComponentReplaced(IEntity entity, IComponent old, IComponent component);
+		void ComponentRemoved(IEntity entity, IComponent component);
 	}
 }

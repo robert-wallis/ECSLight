@@ -10,7 +10,6 @@ namespace Tests.Stubs
 		public EntitySet CreateSetReturn;
 		public Predicate<IEntity> CreateSetPredicate;
 		public EntitySet RemoveSetSet;
-		public IEntity UpdateEntityMembershipEntity;
 
 		public EntitySet CreateSet(Predicate<IEntity> predicate)
 		{
@@ -23,9 +22,16 @@ namespace Tests.Stubs
 			RemoveSetSet = set;
 		}
 
-		public void UpdateEntityMembership(IEntity entity)
+		public void ComponentAdded(IEntity entity, IComponent component)
 		{
-			UpdateEntityMembershipEntity = entity;
+		}
+
+		public void ComponentReplaced(IEntity entity, IComponent old, IComponent component)
+		{
+		}
+
+		public void ComponentRemoved(IEntity entity, IComponent component)
+		{
 		}
 	}
 }

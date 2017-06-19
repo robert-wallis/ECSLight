@@ -1,7 +1,6 @@
 ﻿// Copyright (C) 2017 Robert A. Wallis, All Rights Reserved.
 
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using ECSLight;
 using NUnit.Framework;
@@ -19,12 +18,10 @@ namespace Tests
 			var entity = new StubEntity();
 			entitySet.Add(entity);
 			Assert.AreEqual(1, entitySet.Count);
-			entitySet.Remove(entity);
+			entitySet.Remove(entity, null);
 			Assert.AreEqual(0, entitySet.Count);
 			entitySet.Add(entity);
 			Assert.AreEqual(1, entitySet.Count);
-			entitySet.Clear();
-			Assert.AreEqual(0, entitySet.Count);
 		}
 
 		[Test]
@@ -34,12 +31,12 @@ namespace Tests
 			var removeCount = 0;
 			var entity = new StubEntity();
 			var entitySet = new EntitySet(e => true);
-			entitySet.OnAdded += e =>
+			entitySet.OnAdded += (e, o, n) =>
 			{
 				Assert.AreSame(entity, e);
 				addCount++;
 			};
-			entitySet.OnRemoved += e =>
+			entitySet.OnRemoved += (e, o, n) =>
 			{
 				Assert.AreSame(entity, e);
 				removeCount++;
@@ -49,15 +46,12 @@ namespace Tests
 			entitySet.Add(entity);
 			Assert.AreEqual(1, addCount);
 			Assert.AreEqual(0, removeCount);
-			entitySet.Remove(entity);
+			entitySet.Remove(entity, null);
 			Assert.AreEqual(1, addCount);
 			Assert.AreEqual(1, removeCount);
 			entitySet.Add(entity);
 			Assert.AreEqual(2, addCount);
 			Assert.AreEqual(1, removeCount);
-			entitySet.Clear();
-			Assert.AreEqual(2, addCount);
-			Assert.AreEqual(2, removeCount);
 		}
 
 		[Test]
@@ -67,7 +61,7 @@ namespace Tests
 				var context = new Context();
 				var entity = context.CreateEntity("add remove");
 				var set = context.CreateSet(e => e.Contains<AComponent>());
-				set.OnAdded += e => { e.Remove<AComponent>(); };
+				set.OnAdded += (e, o, n) => { e.Remove<AComponent>(); };
 				entity.Add(new AComponent("on"));
 				Assert.IsFalse(entity.Contains<AComponent>(), "Set should remove A components.");
 			}
@@ -75,7 +69,7 @@ namespace Tests
 				var context = new Context();
 				var entity = context.CreateEntity("test entity");
 				var set = context.CreateSet(e => e.Contains<AComponent>());
-				set.OnRemoved += e => { e.Add(new AComponent("back on")); };
+				set.OnRemoved += (e, o, n) => { e.Add(new AComponent("back on")); };
 				entity.Add(new AComponent("first on"));
 				entity.Remove<AComponent>();
 				Assert.AreEqual("back on", entity.Get<AComponent>().Name, "A should be replaced with inner");
@@ -83,7 +77,7 @@ namespace Tests
 		}
 
 		[Test]
-		public void CoverageICollection()
+		public void CoverageIEnumerable()
 		{
 			var entitySet = new EntitySet(e => true);
 			var entity = new StubEntity();
@@ -98,15 +92,6 @@ namespace Tests
 			var enumerator = enumerable.GetEnumerator();
 			Assert.IsTrue(enumerator.MoveNext());
 			Assert.AreSame(entity, enumerator.Current);
-
-			// CopyTo
-			var array = new IEntity[1];
-			((ICollection<IEntity>) entitySet).CopyTo(array, 0);
-			Assert.AreSame(entity, array.First());
-
-			// IsReadOnly
-			var collection = (ICollection<IEntity>) entitySet;
-			Assert.False(collection.IsReadOnly);
 		}
 	}
 }

@@ -29,8 +29,10 @@ namespace ECSLight
 			var entitySet = new EntitySet(predicate);
 			_entitySets[predicate] = entitySet;
 			foreach (var entity in _entities) {
-				if (entitySet.Matches(entity))
-					entitySet.Add(entity);
+				if (!entitySet.Matches(entity))
+					continue;
+				foreach (var component in entity)
+					entitySet.Add(entity, null, component);
 			}
 			return entitySet;
 		}
@@ -53,16 +55,32 @@ namespace ECSLight
 		/// <summary>
 		/// Add entity to all matching sets, remove from any unmatching sets.
 		/// </summary>
-		public void UpdateEntityMembership(IEntity entity)
+		public void ComponentAdded(IEntity entity, IComponent component)
+		{
+			UpdateSets(entity, null, component);
+		}
+
+		public void ComponentReplaced(IEntity entity, IComponent old, IComponent component)
+		{
+			UpdateSets(entity, old, component);
+		}
+
+		public void ComponentRemoved(IEntity entity, IComponent old)
+		{
+			UpdateSets(entity, old, null);
+		}
+
+		private void UpdateSets(IEntity entity, IComponent old, IComponent component)
 		{
 			foreach (var kvp in _entitySets) {
 				var set = kvp.Value;
 				if (set.Matches(entity))
-					set.Add(entity);
+					set.Add(entity, old, component);
 				else
-					set.Remove(entity);
+					set.Remove(entity, old, component);
 			}
 		}
+
 
 		/// <summary>
 		/// Checks if the entity should be in the types list.

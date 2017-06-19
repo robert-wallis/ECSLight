@@ -31,9 +31,14 @@ namespace ECSLight
 			if (!_components.ContainsKey(entity))
 				_components[entity] = new Dictionary<Type, IComponent>(1);
 			var replaceComponent = _components[entity].ContainsKey(type);
+			var old = replaceComponent ? _components[entity][type] : null;
+
 			_components[entity][type] = component;
-			if (!replaceComponent)
-				_setManager.UpdateEntityMembership(entity);
+
+			if (replaceComponent)
+				_setManager.ComponentReplaced(entity, old, component);
+			else
+				_setManager.ComponentAdded(entity, component);
 		}
 
 		/// <summary>
@@ -97,8 +102,9 @@ namespace ECSLight
 		{
 			if (!_components.ContainsKey(entity))
 				return;
+			var old = _components[entity][type];
 			_components[entity].Remove(type);
-			_setManager.UpdateEntityMembership(entity);
+			_setManager.ComponentRemoved(entity, old);
 		}
 
 		/// <summary>
