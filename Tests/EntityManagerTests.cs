@@ -16,7 +16,7 @@ namespace Tests
 		{
 			var entity = new StubEntity();
 			var entityManager = new EntityManager(new List<IEntity> {entity}, new StubComponentManager());
-			var enumerable = (IEnumerable)entityManager;
+			var enumerable = (IEnumerable) entityManager;
 			var enumerator = enumerable.GetEnumerator();
 			Assert.IsTrue(enumerator.MoveNext());
 			Assert.AreSame(entity, enumerator.Current);

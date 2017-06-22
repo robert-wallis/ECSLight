@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace ECSLight
 {
-	public interface IEntity : IEnumerable<IComponent>
+	public interface IEntity : IEnumerable<object>
 	{
 		/// <summary>
 		/// End the lifecycle of this entity.
@@ -16,12 +16,12 @@ namespace ECSLight
 		/// Add a component to this entity.
 		/// Updates context's entity sets.
 		/// </summary>
-		void Add<TComponent>(TComponent component) where TComponent : class, IComponent;
+		void Add<TComponent>(TComponent component) where TComponent : class;
 
 		/// <summary>
 		/// Check if this entity has a component type.
 		/// </summary>
-		bool Contains<TComponent>() where TComponent : IComponent;
+		bool Contains<TComponent>();
 
 		/// <summary>
 		/// Check if this entity has a component type.
@@ -32,13 +32,13 @@ namespace ECSLight
 		/// Get the component attached to this entity.
 		/// </summary>
 		/// <returns>null if the component is not attached</returns>
-		TComponent Get<TComponent>() where TComponent : class, IComponent;
+		TComponent Get<TComponent>() where TComponent : class;
 
 		/// <summary>
 		/// Remove the component from this entity.
 		/// Updates the context's entity sets.
 		/// </summary>
 		/// <typeparam name="TComponent"></typeparam>
-		void Remove<TComponent>() where TComponent : class, IComponent;
+		void Remove<TComponent>() where TComponent : class;
 	}
 }

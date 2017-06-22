@@ -1,6 +1,5 @@
 ﻿// Copyright (C) 2017 Robert A. Wallis, All Rights Reserved.
 
-using System.Collections;
 using ECSLight;
 using NUnit.Framework;
 using Tests.Stubs;

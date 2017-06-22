@@ -55,22 +55,22 @@ namespace ECSLight
 		/// <summary>
 		/// Add entity to all matching sets, remove from any unmatching sets.
 		/// </summary>
-		public void ComponentAdded(IEntity entity, IComponent component)
+		public void ComponentAdded(IEntity entity, object component)
 		{
 			UpdateSets(entity, null, component);
 		}
 
-		public void ComponentReplaced(IEntity entity, IComponent old, IComponent component)
+		public void ComponentReplaced(IEntity entity, object oldComponent, object component)
 		{
-			UpdateSets(entity, old, component);
+			UpdateSets(entity, oldComponent, component);
 		}
 
-		public void ComponentRemoved(IEntity entity, IComponent old)
+		public void ComponentRemoved(IEntity entity, object oldComponent)
 		{
-			UpdateSets(entity, old, null);
+			UpdateSets(entity, oldComponent, null);
 		}
 
-		private void UpdateSets(IEntity entity, IComponent old, IComponent component)
+		private void UpdateSets(IEntity entity, object old, object component)
 		{
 			foreach (var kvp in _entitySets) {
 				var set = kvp.Value;
