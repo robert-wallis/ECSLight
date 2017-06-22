@@ -10,8 +10,8 @@ namespace ECSLight
 	{
 		public Predicate<IEntity> Predicate { get; }
 		public int Count => _entities.Count;
-		public event Action<IEntity, IComponent, IComponent> OnAdded;
-		public event Action<IEntity, IComponent, IComponent> OnRemoved;
+		public event Action<IEntity, object, object> OnAdded;
+		public event Action<IEntity, object, object> OnRemoved;
 
 		private readonly HashSet<IEntity> _entities = new HashSet<IEntity>();
 
@@ -30,13 +30,13 @@ namespace ECSLight
 			return _entities.Contains(item);
 		}
 
-		public void Add(IEntity item, IComponent old = null, IComponent component = null)
+		public void Add(IEntity item, object old = null, object component = null)
 		{
 			_entities.Add(item);
 			OnAdded?.Invoke(item, old, component);
 		}
 
-		public bool Remove(IEntity item, IComponent old, IComponent component = null)
+		public bool Remove(IEntity item, object old, object component = null)
 		{
 			var hadEntity = _entities.Remove(item);
 			if (hadEntity)

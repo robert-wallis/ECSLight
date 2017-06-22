@@ -7,13 +7,13 @@ namespace ECSLight
 {
 	public class ComponentManager : IComponentManager
 	{
-		private readonly Dictionary<IEntity, Dictionary<Type, IComponent>> _components;
+		private readonly Dictionary<IEntity, Dictionary<Type, object>> _components;
 		private readonly ISetManager _setManager;
-		private static readonly IEnumerator<IComponent> EmptyComponents = new List<IComponent>(0).GetEnumerator();
+		private static readonly IEnumerator<object> EmptyComponents = new List<object>(0).GetEnumerator();
 
 		public ComponentManager(ISetManager setManager)
 		{
-			_components = new Dictionary<IEntity, Dictionary<Type, IComponent>>();
+			_components = new Dictionary<IEntity, Dictionary<Type, object>>();
 			_setManager = setManager;
 		}
 
@@ -23,13 +23,13 @@ namespace ECSLight
 		/// <typeparam name="TComponent">Type of component to attach.</typeparam>
 		/// <param name="entity">IEntity to which the component should be attached.</param>
 		/// <param name="component">Component to attach to the entity.</param>
-		public void AddComponent<TComponent>(IEntity entity, TComponent component) where TComponent : class, IComponent
+		public void AddComponent<TComponent>(IEntity entity, TComponent component) where TComponent : class
 		{
 			var type = typeof(TComponent);
 
 			// add component to entity
 			if (!_components.ContainsKey(entity))
-				_components[entity] = new Dictionary<Type, IComponent>(1);
+				_components[entity] = new Dictionary<Type, object>(1);
 			var replaceComponent = _components[entity].ContainsKey(type);
 			var old = replaceComponent ? _components[entity][type] : null;
 
@@ -47,7 +47,7 @@ namespace ECSLight
 		/// <typeparam name="TComponent">Type of component that may be attached to the entity.</typeparam>
 		/// <param name="entity">IEntity to check if component is attached.</param>
 		/// <returns>`true` if the entity has a component of that type attached</returns>
-		public bool ContainsComponent<TComponent>(IEntity entity) where TComponent : IComponent
+		public bool ContainsComponent<TComponent>(IEntity entity)
 		{
 			var type = typeof(TComponent);
 			return ContainsComponent(entity, type);
@@ -73,7 +73,7 @@ namespace ECSLight
 		/// <typeparam name="TComponent">Type of component to remove.</typeparam>
 		/// <param name="entity">Which entity owns the component?</param>
 		/// <returns>`null` if no component is attached</returns>
-		public TComponent ComponentFrom<TComponent>(IEntity entity) where TComponent : class, IComponent
+		public TComponent ComponentFrom<TComponent>(IEntity entity) where TComponent : class
 		{
 			if (!_components.ContainsKey(entity))
 				return null;
@@ -87,7 +87,7 @@ namespace ECSLight
 		/// </summary>
 		/// <typeparam name="TComponent">Type of component to remove from entitiy.</typeparam>
 		/// <param name="entity">IEntity from which component is removed.</param>
-		public void RemoveComponent<TComponent>(IEntity entity) where TComponent : class, IComponent
+		public void RemoveComponent<TComponent>(IEntity entity) where TComponent : class
 		{
 			var type = typeof(TComponent);
 			RemoveComponent(entity, type);
@@ -110,7 +110,7 @@ namespace ECSLight
 		/// <summary>
 		/// Enumerate through the components in an entity.
 		/// </summary>
-		public IEnumerator<IComponent> GetEnumerator(IEntity entity)
+		public IEnumerator<object> GetEnumerator(IEntity entity)
 		{
 			if (!_components.ContainsKey(entity))
 				return EmptyComponents;

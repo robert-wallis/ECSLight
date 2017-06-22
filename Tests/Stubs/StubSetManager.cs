@@ -22,15 +22,15 @@ namespace Tests.Stubs
 			RemoveSetSet = set;
 		}
 
-		public void ComponentAdded(IEntity entity, IComponent component)
+		public void ComponentAdded(IEntity entity, object component)
 		{
 		}
 
-		public void ComponentReplaced(IEntity entity, IComponent old, IComponent component)
+		public void ComponentReplaced(IEntity entity, object oldComponent, object component)
 		{
 		}
 
-		public void ComponentRemoved(IEntity entity, IComponent component)
+		public void ComponentRemoved(IEntity entity, object oldComponent)
 		{
 		}
 	}

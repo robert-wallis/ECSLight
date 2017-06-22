@@ -56,9 +56,6 @@
     <Compile Include="..\EntitySet.cs">
       <Link>EntitySet.cs</Link>
     </Compile>
-    <Compile Include="..\IComponent.cs">
-      <Link>IComponent.cs</Link>
-    </Compile>
     <Compile Include="..\IComponentManager.cs">
       <Link>IComponentManager.cs</Link>
     </Compile>

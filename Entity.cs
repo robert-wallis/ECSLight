@@ -43,7 +43,7 @@ namespace ECSLight
 		/// Add a component to this entity.
 		/// Updates context's entity sets.
 		/// </summary>
-		public void Add<TComponent>(TComponent component) where TComponent : class, IComponent
+		public void Add<TComponent>(TComponent component) where TComponent : class
 		{
 			_componentManager.AddComponent(this, component);
 		}
@@ -51,7 +51,7 @@ namespace ECSLight
 		/// <summary>
 		/// Check if this entity has a component type.
 		/// </summary>
-		public bool Contains<TComponent>() where TComponent : IComponent
+		public bool Contains<TComponent>()
 		{
 			return _componentManager.ContainsComponent<TComponent>(this);
 		}
@@ -68,7 +68,7 @@ namespace ECSLight
 		/// Get the component attached to this entity.
 		/// </summary>
 		/// <returns>null if the component is not attached</returns>
-		public TComponent Get<TComponent>() where TComponent : class, IComponent
+		public TComponent Get<TComponent>() where TComponent : class
 		{
 			return _componentManager.ComponentFrom<TComponent>(this);
 		}
@@ -78,7 +78,7 @@ namespace ECSLight
 		/// Updates the context's entity sets.
 		/// </summary>
 		/// <typeparam name="TComponent"></typeparam>
-		public void Remove<TComponent>() where TComponent : class, IComponent
+		public void Remove<TComponent>() where TComponent : class
 		{
 			_componentManager.RemoveComponent<TComponent>(this);
 		}
@@ -86,7 +86,7 @@ namespace ECSLight
 		/// <summary>
 		/// Enumerate through this entity's components.
 		/// </summary>
-		public IEnumerator<IComponent> GetEnumerator()
+		public IEnumerator<object> GetEnumerator()
 		{
 			return _componentManager.GetEnumerator(this);
 		}
@@ -95,7 +95,7 @@ namespace ECSLight
 		{
 			// Unity 3.5 target doesnt support IEnumerable to string[], for string.Join() below
 			var componentStrings = new List<string>();
-			foreach(var component in this) {
+			foreach (var component in this) {
 				componentStrings.Add(component.ToString());
 			}
 			var components = string.Join(", ", componentStrings.ToArray());
