@@ -102,8 +102,11 @@ namespace ECSLight
 		{
 			if (!_components.ContainsKey(entity))
 				return;
-			var old = _components[entity][type];
-			_components[entity].Remove(type);
+			var components = _components[entity];
+			if (!components.ContainsKey(type))
+				return;
+			var old = components[type];
+			components.Remove(type);
 			_setManager.ComponentRemoved(entity, old);
 		}
 
