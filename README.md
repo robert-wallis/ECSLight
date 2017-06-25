@@ -103,7 +103,7 @@ Now the hero is positioned at 0,0.  What does that mean?
 * To move the hero we need to know the position.
 * Collision detection needs to know about position changes to see if he triggered a switch.
 
-Those three examples of logic should be seperated from eachother,
+Those three examples of logic should be seperated from each-other,
 and they shouldn't be in the Position class.  So where do they go?
 
 ### Systems
@@ -189,12 +189,13 @@ class GravitySystem {
 	private readonly EntitySet _movable;
 	public GravitySystem(Context context) {
 		_movable = context.CreateSet(e => {
-			// all entities that are 'movable' with a Position and have a GameObject view
+			// all entities that are 'movable' with a Position
 			e.Contains<Movable>() &&
 			e.Contains<Position>()
 		});
 	}
 
+	// Call this every frame.
 	public void Update()
 	{
 		foreach (var entity in _movable)
@@ -213,8 +214,9 @@ class GravitySystem {
 ```
 
 Why don't we use `entity.Get<GameObject>()` and update the transform right now?
-Because other things could update the position too, like pressing up on the keyboard,
-an explosion, a grappling hook.  All those things have different 'concerns'.
+Because other things could update the position too.
+Like pressing 'up' on the keyboard, an explosion, or a grappling hook.
+All those things have different 'concerns'.
 We want to "seperate concerns".
 
 In the above `ViewSystem.OnPositionAdded` example, every time a position changes, the view is loaded again.
