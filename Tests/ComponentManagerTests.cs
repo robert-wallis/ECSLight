@@ -19,6 +19,9 @@ namespace Tests
 				new AComponent("a")
 			};
 			Assert.IsNotNull(componentManager.ComponentFrom<AComponent>(entity));
+
+			// removing component that doesn't exist, doesn't crash
+			entity.Remove<BComponent>();
 		}
 
 		[Test]
