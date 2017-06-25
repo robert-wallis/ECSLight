@@ -8,5 +8,6 @@ namespace ECSLight
 	{
 		IEntity CreateEntity(string name = "");
 		void ReleaseEntity(IEntity entity);
+		void ReleaseAll();
 	}
 }

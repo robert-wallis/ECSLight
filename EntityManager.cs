@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ECSLight
 {
@@ -42,6 +43,16 @@ namespace ECSLight
 				_componentManager.RemoveComponent(entity, type);
 			}
 			_entities.Remove(entity);
+		}
+
+		/// <summary>
+		/// Release all the entities.
+		/// </summary>
+		public void ReleaseAll()
+		{
+			foreach (var entity in _entities.ToList()) {
+				ReleaseEntity(entity);
+			}
 		}
 
 		public IEnumerator<IEntity> GetEnumerator()

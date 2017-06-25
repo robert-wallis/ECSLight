@@ -146,6 +146,28 @@ namespace Tests
 		}
 
 		[Test]
+		public void ContextDispose()
+		{
+			// WHEN the context is disposed
+			// THEN the entities should be properly disposed by sending removal events
+			var onRemoved = false;
+			using (var context = new Context()) {
+				var entity = context.CreateEntity("dispose");
+				entity.Add(new AComponent("a"));
+				var set = context.CreateSet(e => e.Contains<AComponent>());
+				set.OnRemoved += (e, o, n) =>
+				{
+					Assert.IsTrue(e.ToString().StartsWith("dispose"), $"expected \"{e}\" to start with \"dispose\"");
+					var component = o as AComponent;
+					Assert.NotNull(component, "component != null");
+					Assert.AreEqual("a", component.Name, "Component is different");
+					onRemoved = true;
+				};
+			}
+			Assert.IsTrue(onRemoved, "OnRemoved not called");
+		}
+
+		[Test]
 		public void Coverage()
 		{
 			// cover the IEnumerable GetEnumerator function

@@ -11,7 +11,7 @@ namespace ECSLight
 	/// For example, a game could have a 'board' context with 'piece' entities.
 	/// And a multiplayer game could have multiple 'board' contexts.
 	/// </summary>
-	public class Context : IEnumerable<IEntity>
+	public class Context : IEnumerable<IEntity>, IDisposable
 	{
 		private readonly IEntityManager _entityManager;
 		private readonly ISetManager _setManager;
@@ -22,6 +22,11 @@ namespace ECSLight
 			_setManager = new SetManager(entities);
 			var componentManager = new ComponentManager(_setManager);
 			_entityManager = new EntityManager(entities, componentManager);
+		}
+
+		public void Dispose()
+		{
+			_entityManager.ReleaseAll();
 		}
 
 		/// <summary>

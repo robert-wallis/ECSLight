@@ -24,6 +24,10 @@ namespace Tests.Stubs
 			ReleaseEntity_Entity = entity;
 		}
 
+		public void ReleaseAll()
+		{
+		}
+
 		public IEnumerator<IEntity> GetEnumerator()
 		{
 			return GetEnumerator_Return;
