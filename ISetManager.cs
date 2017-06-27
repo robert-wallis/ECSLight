@@ -6,7 +6,7 @@ namespace ECSLight
 {
 	public interface ISetManager
 	{
-		EntitySet CreateSet(Predicate<IEntity> predicate);
+		EntitySet CreateSet(EntitySet.IncludeInSet predicate);
 		void RemoveSet(EntitySet set);
 		void ComponentAdded(IEntity entity, object component);
 		void ComponentReplaced(IEntity entity, object oldComponent, object component);

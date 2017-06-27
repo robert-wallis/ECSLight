@@ -1,6 +1,5 @@
 // Copyright (C) 2017 Robert A. Wallis, All Rights Reserved.
 
-using System;
 using ECSLight;
 
 namespace Tests.Stubs
@@ -8,10 +7,10 @@ namespace Tests.Stubs
 	internal class StubSetManager : ISetManager
 	{
 		public EntitySet CreateSetReturn;
-		public Predicate<IEntity> CreateSetPredicate;
+		public EntitySet.IncludeInSet CreateSetPredicate;
 		public EntitySet RemoveSetSet;
 
-		public EntitySet CreateSet(Predicate<IEntity> predicate)
+		public EntitySet CreateSet(EntitySet.IncludeInSet predicate)
 		{
 			CreateSetPredicate = predicate;
 			return CreateSetReturn;

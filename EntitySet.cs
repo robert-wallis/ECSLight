@@ -1,6 +1,5 @@
 ﻿// Copyright (C) 2017 Robert A. Wallis, All Rights Reserved.
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -8,14 +7,18 @@ namespace ECSLight
 {
 	public class EntitySet : IEnumerable<IEntity>
 	{
-		public Predicate<IEntity> Predicate { get; }
+		public delegate bool IncludeInSet(IEntity entity);
+
+		public delegate void ComponentChanged(IEntity entity, object oldComponent, object newComponent);
+
+		public IncludeInSet Predicate { get; }
 		public int Count => _entities.Count;
-		public event Action<IEntity, object, object> OnAdded;
-		public event Action<IEntity, object, object> OnRemoved;
+		public event ComponentChanged OnAdded;
+		public event ComponentChanged OnRemoved;
 
 		private readonly HashSet<IEntity> _entities = new HashSet<IEntity>();
 
-		public EntitySet(Predicate<IEntity> predicate)
+		public EntitySet(IncludeInSet predicate)
 		{
 			Predicate = predicate;
 		}

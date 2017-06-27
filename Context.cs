@@ -63,7 +63,7 @@ namespace ECSLight
 		/// Returns all entities that match the predicate.
 		/// </summary>
 		/// <returns>An enumerable list of entities, that will update automatically.</returns>
-		public EntitySet CreateSet(Predicate<IEntity> predicate)
+		public EntitySet CreateSet(EntitySet.IncludeInSet predicate)
 		{
 			return _setManager.CreateSet(predicate);
 		}

@@ -12,19 +12,19 @@ namespace ECSLight
 	public class SetManager : ISetManager
 	{
 		private readonly IEnumerable<IEntity> _entities;
-		private readonly Dictionary<Predicate<IEntity>, EntitySet> _entitySets;
+		private readonly Dictionary<EntitySet.IncludeInSet, EntitySet> _entitySets;
 
 		public SetManager(IEnumerable<IEntity> entities)
 		{
 			_entities = entities;
-			_entitySets = new Dictionary<Predicate<IEntity>, EntitySet>();
+			_entitySets = new Dictionary<EntitySet.IncludeInSet, EntitySet>();
 		}
 
 		/// <summary>
 		/// Makes a new set and registers it for updating membership later.
 		/// </summary>
 		/// <returns>An enumerable list of entitySet, that will update automatically.</returns>
-		public EntitySet CreateSet(Predicate<IEntity> predicate)
+		public EntitySet CreateSet(EntitySet.IncludeInSet predicate)
 		{
 			var entitySet = new EntitySet(predicate);
 			_entitySets[predicate] = entitySet;
@@ -42,7 +42,7 @@ namespace ECSLight
 		/// </summary>
 		public void RemoveSet(EntitySet set)
 		{
-			var keys = new List<Predicate<IEntity>>();
+			var keys = new List<EntitySet.IncludeInSet>();
 			foreach (var kvp in _entitySets) {
 				if (kvp.Value == set)
 					keys.Add(kvp.Key);
