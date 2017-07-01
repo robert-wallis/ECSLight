@@ -12,12 +12,12 @@ namespace ECSLight
 	public class SetManager : ISetManager
 	{
 		private readonly IEnumerable<IEntity> _entities;
-		private readonly Dictionary<EntitySet.IncludeInSet, EntitySet> _entitySets;
+		private readonly List<EntitySet> _entitySets;
 
 		public SetManager(IEnumerable<IEntity> entities)
 		{
 			_entities = entities;
-			_entitySets = new Dictionary<EntitySet.IncludeInSet, EntitySet>();
+			_entitySets = new List<EntitySet>();
 		}
 
 		/// <summary>
@@ -27,7 +27,7 @@ namespace ECSLight
 		public EntitySet CreateSet(EntitySet.IncludeInSet predicate)
 		{
 			var entitySet = new EntitySet(predicate);
-			_entitySets[predicate] = entitySet;
+			_entitySets.Add(entitySet);
 			foreach (var entity in _entities) {
 				if (!entitySet.Matches(entity))
 					continue;
@@ -42,14 +42,7 @@ namespace ECSLight
 		/// </summary>
 		public void RemoveSet(EntitySet set)
 		{
-			var keys = new List<EntitySet.IncludeInSet>();
-			foreach (var kvp in _entitySets) {
-				if (kvp.Value == set)
-					keys.Add(kvp.Key);
-			}
-			foreach (var key in keys) {
-				_entitySets.Remove(key);
-			}
+			_entitySets.Remove(set);
 		}
 
 		/// <summary>
@@ -72,8 +65,7 @@ namespace ECSLight
 
 		private void UpdateSets(IEntity entity, object old, object component)
 		{
-			foreach (var kvp in _entitySets) {
-				var set = kvp.Value;
+			foreach (var set in _entitySets) {
 				if (set.Matches(entity))
 					set.Add(entity, old, component);
 				else

@@ -93,5 +93,6 @@ namespace Tests
 			Assert.IsTrue(enumerator.MoveNext());
 			Assert.AreSame(entity, enumerator.Current);
 		}
+
 	}
 }
