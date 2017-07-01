@@ -15,6 +15,14 @@ namespace Tests.Stubs
 		{
 		}
 
+		public void EnableSet(EntitySet set)
+		{
+		}
+
+		public void DisableSet(EntitySet set)
+		{
+		}
+
 		public void ComponentAdded(IEntity entity, object component)
 		{
 		}

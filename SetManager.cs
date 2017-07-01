@@ -12,12 +12,14 @@ namespace ECSLight
 	public class SetManager : ISetManager
 	{
 		private readonly IEnumerable<IEntity> _entities;
-		private readonly List<EntitySet> _entitySets;
+		private readonly HashSet<EntitySet> _enabledSets;
+		private readonly HashSet<EntitySet> _disabledSets;
 
 		public SetManager(IEnumerable<IEntity> entities)
 		{
 			_entities = entities;
-			_entitySets = new List<EntitySet>();
+			_enabledSets = new HashSet<EntitySet>();
+			_disabledSets = new HashSet<EntitySet>();
 		}
 
 		/// <summary>
@@ -27,14 +29,8 @@ namespace ECSLight
 		public EntitySet CreateSet(EntitySet.IncludeInSet predicate)
 		{
 			var entitySet = new EntitySet(predicate);
-			_entitySets.Add(entitySet);
-			foreach (var entity in _entities) {
-				if (!entitySet.Matches(entity))
-					continue;
-				entitySet.Add(entity);
-				foreach (var component in entity)
-					entitySet.ComponentAdded(entity, component);
-			}
+			_enabledSets.Add(entitySet);
+			MatchAllEntitiesToNewSet(entitySet);
 			return entitySet;
 		}
 
@@ -43,7 +39,30 @@ namespace ECSLight
 		/// </summary>
 		public void RemoveSet(EntitySet set)
 		{
-			_entitySets.Remove(set);
+			_enabledSets.Remove(set);
+		}
+
+		/// <summary>
+		/// Add or Remove components to this set when Components change.
+		/// Undo a DisableSet.
+		/// Default is enabled.
+		/// </summary>
+		public void EnableSet(EntitySet set)
+		{
+			_disabledSets.Remove(set);
+			_enabledSets.Add(set);
+			MatchAllEntitiesToEnabledSet(set);
+		}
+
+		/// <summary>
+		/// Don't Add or Remove components to this set when Components change.
+		/// Default state is enabled.
+		/// </summary>
+		/// <param name="set"></param>
+		public void DisableSet(EntitySet set)
+		{
+			_enabledSets.Remove(set);
+			_disabledSets.Add(set);
 		}
 
 		/// <summary>
@@ -51,7 +70,7 @@ namespace ECSLight
 		/// </summary>
 		public void ComponentAdded(IEntity entity, object component)
 		{
-			foreach (var set in _entitySets) {
+			foreach (var set in _enabledSets) {
 				if (set.Matches(entity)) {
 					set.Add(entity);
 					set.ComponentAdded(entity, component);
@@ -67,7 +86,7 @@ namespace ECSLight
 		/// </summary>
 		public void ComponentReplaced(IEntity entity, object oldComponent, object newComponent)
 		{
-			foreach (var set in _entitySets) {
+			foreach (var set in _enabledSets) {
 				if (set.Matches(entity)) {
 					set.Add(entity);
 					set.ComponentReplaced(entity, oldComponent, newComponent);
@@ -83,12 +102,41 @@ namespace ECSLight
 		/// </summary>
 		public void ComponentRemoved(IEntity entity, object oldComponent)
 		{
-			foreach (var set in _entitySets) {
+			foreach (var set in _enabledSets) {
 				if (set.Matches(entity)) {
 					set.Add(entity);
 					set.ComponentAdded(entity, null);
 				} else {
 					set.ComponentRemoved(entity, oldComponent);
+					set.Remove(entity);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Check all the entities for membership and Add to the set.
+		/// </summary>
+		private void MatchAllEntitiesToNewSet(EntitySet set)
+		{
+			foreach (var entity in _entities) {
+				if (!set.Matches(entity))
+					continue;
+				set.Add(entity);
+				set.ComponentAdded(entity, null);
+			}
+		}
+
+		/// <summary>
+		/// Check all the entities for membership and Add or Remove from the set.
+		/// </summary>
+		private void MatchAllEntitiesToEnabledSet(EntitySet set)
+		{
+			foreach (var entity in _entities) {
+				if (set.Matches(entity)) {
+					set.ComponentReplaced(entity, null, null);
+					set.Add(entity);
+				} else {
+					set.ComponentRemoved(entity, null);
 					set.Remove(entity);
 				}
 			}
