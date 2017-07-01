@@ -14,8 +14,8 @@ namespace Tests
 		public void CreateRemove()
 		{
 			var entities = new List<IEntity>();
-			var setManager = new SetManager(entities);
-			var componentManager = new ComponentManager(setManager);
+			var setManager = (ISetManager) new SetManager(entities);
+			var componentManager = (IComponentManager) new ComponentManager(setManager);
 			var entity = new Entity(new StubEntityManager(), componentManager, "test entity") {
 				new AComponent("ac")
 			};
@@ -30,6 +30,28 @@ namespace Tests
 
 			setManager.RemoveSet(set);
 			entity.Add(new AComponent("ac2"));
+			Assert.IsTrue(set.Matches(entity));
+			Assert.AreEqual(0, set.Count, "set shouldn't have been updated");
+		}
+
+		[Test]
+		public void MissingComponentPredicate()
+		{
+			var entities = new List<IEntity>();
+			var setManager = (ISetManager) new SetManager(entities);
+			var componentManager = (IComponentManager) new ComponentManager(setManager);
+			var entity = new Entity(new StubEntityManager(), componentManager, "test entity");
+			entities.Add(entity);
+			var set = setManager.CreateSet(e => !e.Contains<AComponent>());
+			Assert.IsTrue(set.Matches(entity));
+			Assert.AreEqual(1, set.Count, "set should have added entity");
+
+			entity.Add(new AComponent("ac1"));
+			Assert.IsFalse(set.Matches(entity));
+			Assert.AreEqual(0, set.Count, "set should have been updated by set manager");
+
+			setManager.RemoveSet(set);
+			entity.Remove<AComponent>();
 			Assert.IsTrue(set.Matches(entity));
 			Assert.AreEqual(0, set.Count, "set shouldn't have been updated");
 		}

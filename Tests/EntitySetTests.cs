@@ -16,11 +16,11 @@ namespace Tests
 		{
 			var entitySet = new EntitySet(e => true);
 			var entity = new StubEntity();
-			entitySet.Add(entity, null);
+			entitySet.Add(entity);
 			Assert.AreEqual(1, entitySet.Count);
-			entitySet.Remove(entity, null);
+			entitySet.Remove(entity);
 			Assert.AreEqual(0, entitySet.Count);
-			entitySet.Add(entity, null);
+			entitySet.Add(entity);
 			Assert.AreEqual(1, entitySet.Count);
 		}
 
@@ -43,13 +43,13 @@ namespace Tests
 			};
 			Assert.AreEqual(0, addCount);
 			Assert.AreEqual(0, removeCount);
-			entitySet.Add(entity, null);
+			entitySet.ComponentAdded(entity, null);
 			Assert.AreEqual(1, addCount);
 			Assert.AreEqual(0, removeCount);
-			entitySet.Remove(entity, null);
+			entitySet.ComponentRemoved(entity, null);
 			Assert.AreEqual(1, addCount);
 			Assert.AreEqual(1, removeCount);
-			entitySet.Add(entity, null);
+			entitySet.ComponentAdded(entity, null);
 			Assert.AreEqual(2, addCount);
 			Assert.AreEqual(1, removeCount);
 		}
@@ -81,7 +81,7 @@ namespace Tests
 		{
 			var entitySet = new EntitySet(e => true);
 			var entity = new StubEntity();
-			entitySet.Add(entity, null);
+			entitySet.Add(entity);
 
 			// Contains
 			Assert.IsTrue(entitySet.Contains(entity));

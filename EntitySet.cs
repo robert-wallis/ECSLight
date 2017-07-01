@@ -31,32 +31,38 @@ namespace ECSLight
 			return Predicate.Invoke(entity);
 		}
 
-		public bool Contains(IEntity item)
+		public bool Contains(IEntity entity)
 		{
-			return _entities.Contains(item);
+			return _entities.Contains(entity);
 		}
 
-		public void Add(IEntity item, object component = null)
+		public void Add(IEntity entity)
 		{
-			_entities.Add(item);
-			OnAdded?.Invoke(item, component);
+			_entities.Add(entity);
 		}
 
-		public void Replace(IEntity item, object oldComponent, object newComponent)
+		public void Remove(IEntity entity)
 		{
-			if (_entities.Contains(item)) {
-				OnReplaced?.Invoke(item, oldComponent, newComponent);
+			_entities.Remove(entity);
+		}
+
+		public void ComponentAdded(IEntity entity, object component)
+		{
+			OnAdded?.Invoke(entity, component);
+		}
+
+		public void ComponentReplaced(IEntity entity, object oldComponent, object newComponent)
+		{
+			if (_entities.Contains(entity)) {
+				OnReplaced?.Invoke(entity, oldComponent, newComponent);
 			} else {
-				Add(item, newComponent);
+				ComponentAdded(entity, newComponent);
 			}
 		}
 
-		public bool Remove(IEntity item, object old = null)
+		public void ComponentRemoved(IEntity entity, object old)
 		{
-			var hadEntity = _entities.Remove(item);
-			if (hadEntity)
-				OnRemoved?.Invoke(item, old);
-			return hadEntity;
+			OnRemoved?.Invoke(entity, old);
 		}
 
 		public IEnumerator<IEntity> GetEnumerator()

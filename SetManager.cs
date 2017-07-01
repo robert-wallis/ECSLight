@@ -31,8 +31,9 @@ namespace ECSLight
 			foreach (var entity in _entities) {
 				if (!entitySet.Matches(entity))
 					continue;
+				entitySet.Add(entity);
 				foreach (var component in entity)
-					entitySet.Add(entity, component);
+					entitySet.ComponentAdded(entity, component);
 			}
 			return entitySet;
 		}
@@ -50,12 +51,14 @@ namespace ECSLight
 		/// </summary>
 		public void ComponentAdded(IEntity entity, object component)
 		{
-			foreach (var set in _entitySets)
-			{
-				if (set.Matches(entity))
-					set.Add(entity, component);
-				else
-					set.Remove(entity, null);
+			foreach (var set in _entitySets) {
+				if (set.Matches(entity)) {
+					set.Add(entity);
+					set.ComponentAdded(entity, component);
+				} else {
+					set.ComponentRemoved(entity, null);
+					set.Remove(entity);
+				}
 			}
 		}
 
@@ -64,12 +67,14 @@ namespace ECSLight
 		/// </summary>
 		public void ComponentReplaced(IEntity entity, object oldComponent, object newComponent)
 		{
-			foreach (var set in _entitySets)
-			{
-				if (set.Matches(entity))
-					set.Replace(entity, oldComponent, newComponent);
-				else
-					set.Remove(entity, oldComponent);
+			foreach (var set in _entitySets) {
+				if (set.Matches(entity)) {
+					set.Add(entity);
+					set.ComponentReplaced(entity, oldComponent, newComponent);
+				} else {
+					set.ComponentRemoved(entity, oldComponent);
+					set.Remove(entity);
+				}
 			}
 		}
 
@@ -78,12 +83,14 @@ namespace ECSLight
 		/// </summary>
 		public void ComponentRemoved(IEntity entity, object oldComponent)
 		{
-			foreach (var set in _entitySets)
-			{
-				if (set.Matches(entity))
-					set.Add(entity, null);
-				else
-					set.Remove(entity, oldComponent);
+			foreach (var set in _entitySets) {
+				if (set.Matches(entity)) {
+					set.Add(entity);
+					set.ComponentAdded(entity, null);
+				} else {
+					set.ComponentRemoved(entity, oldComponent);
+					set.Remove(entity);
+				}
 			}
 		}
 

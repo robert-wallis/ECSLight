@@ -63,7 +63,7 @@ namespace Tests
 			var entity = context.CreateEntity("original");
 			var component = new AComponent("a1");
 			// set doesn't match until component is attached
-			var setA = context.CreateSet(e => SetManager.EntityMatchesTypes(e, typeof(AComponent)));
+			var setA = context.CreateSet(e => e.Contains<AComponent>());
 			{
 				Assert.AreEqual(0, setA.Count);
 				entity.Add(component);
@@ -77,7 +77,7 @@ namespace Tests
 			// B doesn't match 'entity' because it doesn't have a BComponent.
 			{
 				Assert.AreEqual(1, setA.Count);
-				var setB = context.CreateSet(e => SetManager.EntityMatchesTypes(e, typeof(BComponent)));
+				var setB = context.CreateSet(e => e.Contains<BComponent>());
 				Assert.AreEqual(0, setB.Count);
 			}
 
