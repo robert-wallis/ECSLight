@@ -6,19 +6,13 @@ namespace Tests.Stubs
 {
 	internal class StubSetManager : ISetManager
 	{
-		public EntitySet CreateSetReturn;
-		public EntitySet.IncludeInSet CreateSetPredicate;
-		public EntitySet RemoveSetSet;
-
 		public EntitySet CreateSet(EntitySet.IncludeInSet predicate)
 		{
-			CreateSetPredicate = predicate;
-			return CreateSetReturn;
+			return null;
 		}
 
 		public void RemoveSet(EntitySet set)
 		{
-			RemoveSetSet = set;
 		}
 
 		public void ComponentAdded(IEntity entity, object component)

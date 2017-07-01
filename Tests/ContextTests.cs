@@ -112,6 +112,15 @@ namespace Tests
 				entity.Add(new AComponent("inner"));
 				Assert.AreEqual(1, setA.Count);
 			}
+
+			// replace component sometimes is an Add
+			{
+				var setIsAlpha = context.CreateSet(e => e.Contains<AComponent>() && e.Get<AComponent>().Name == "Alpha");
+				Assert.IsTrue(entity.Contains<AComponent>());
+				Assert.AreEqual(0, setIsAlpha.Count, "No A component should be Alpha yet");
+				entity.Add(new AComponent("Alpha"));
+				Assert.AreEqual(1, setIsAlpha.Count, "Replacing should Add to new sets that match.");
+			}
 		}
 
 		[Test]
@@ -155,7 +164,7 @@ namespace Tests
 				var entity = context.CreateEntity("dispose");
 				entity.Add(new AComponent("a"));
 				var set = context.CreateSet(e => e.Contains<AComponent>());
-				set.OnRemoved += (e, o, n) =>
+				set.OnRemoved += (e, o) =>
 				{
 					Assert.IsTrue(e.ToString().StartsWith("dispose"), $"expected \"{e}\" to start with \"dispose\"");
 					var component = o as AComponent;

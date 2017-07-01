@@ -8,20 +8,15 @@ namespace Tests.Stubs
 {
 	internal class StubEntityManager : IEntityManager
 	{
-		public string CreateEntity_Name;
-		public IEntity CreateEntity_Return;
-		public IEntity ReleaseEntity_Entity;
-		public IEnumerator<IEntity> GetEnumerator_Return;
+		public IEnumerator<IEntity> GetEnumeratorReturn = new List<IEntity>().GetEnumerator();
 
 		public IEntity CreateEntity(string name = "")
 		{
-			CreateEntity_Name = name;
-			return CreateEntity_Return;
+			return null;
 		}
 
 		public void ReleaseEntity(IEntity entity)
 		{
-			ReleaseEntity_Entity = entity;
 		}
 
 		public void ReleaseAll()
@@ -30,7 +25,7 @@ namespace Tests.Stubs
 
 		public IEnumerator<IEntity> GetEnumerator()
 		{
-			return GetEnumerator_Return;
+			return GetEnumeratorReturn;
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
