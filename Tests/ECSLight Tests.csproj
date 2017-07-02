@@ -55,7 +55,7 @@
   <ItemGroup>
     <Compile Include="EntityManagerTests.cs" />
     <Compile Include="EntitySetTests.cs" />
-    <Compile Include="Stubs\SetManagerTests.cs" />
+    <Compile Include="SetManagerTests.cs" />
     <Compile Include="Stubs\StubEntity.cs" />
     <Compile Include="Stubs\AComponent.cs" />
     <Compile Include="Stubs\BComponent.cs" />
