@@ -1,4 +1,5 @@
 ﻿[![Chat at https://gitter.im/ECSLight/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ECSLight/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/robert-wallis/ECSLight.svg?branch=master)](https://travis-ci.org/robert-wallis/ECSLight)
 
 # ECS Light
 
