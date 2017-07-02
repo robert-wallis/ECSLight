@@ -31,8 +31,7 @@ namespace ECSLight
 			foreach (var entity in _entities) {
 				if (!entitySet.Matches(entity))
 					continue;
-				foreach (var component in entity)
-					entitySet.Add(entity, null, component);
+				entitySet.Add(entity);
 			}
 			return entitySet;
 		}
@@ -48,31 +47,15 @@ namespace ECSLight
 		/// <summary>
 		/// Add entity to all matching sets, remove from any unmatching sets.
 		/// </summary>
-		public void ComponentAdded(IEntity entity, object component)
-		{
-			UpdateSets(entity, null, component);
-		}
-
-		public void ComponentReplaced(IEntity entity, object oldComponent, object component)
-		{
-			UpdateSets(entity, oldComponent, component);
-		}
-
-		public void ComponentRemoved(IEntity entity, object oldComponent)
-		{
-			UpdateSets(entity, oldComponent, null);
-		}
-
-		private void UpdateSets(IEntity entity, object old, object component)
+		public void UpdateSets(IEntity entity)
 		{
 			foreach (var set in _entitySets) {
 				if (set.Matches(entity))
-					set.Add(entity, old, component);
+					set.Add(entity);
 				else
-					set.Remove(entity, old, component);
+					set.Remove(entity);
 			}
 		}
-
 
 		/// <summary>
 		/// Checks if the entity should be in the types list.

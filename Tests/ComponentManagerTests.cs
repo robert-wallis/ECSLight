@@ -47,5 +47,22 @@ namespace Tests
 				Assert.IsFalse(enumerator.MoveNext());
 			}
 		}
+
+		[Test]
+		public void DisposeDisposableComponents()
+		{
+			// GIVEN a disposable component
+			var disposed = false;
+			var componentManager = new ComponentManager(new StubSetManager());
+			var entity = new Entity(_stubEntityManager, componentManager) {
+				new DisposableComponent(() => disposed = true)
+			};
+
+			// WHEN it is removed
+			componentManager.RemoveComponent<DisposableComponent>(entity);
+
+			// THEN it should fire the IDisposable.Dispose() function
+			Assert.IsTrue(disposed);
+		}
 	}
 }

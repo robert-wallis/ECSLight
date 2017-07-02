@@ -9,12 +9,8 @@ namespace ECSLight
 	{
 		public delegate bool IncludeInSet(IEntity entity);
 
-		public delegate void ComponentChanged(IEntity entity, object oldComponent, object newComponent);
-
 		public IncludeInSet Predicate { get; }
 		public int Count => _entities.Count;
-		public event ComponentChanged OnAdded;
-		public event ComponentChanged OnRemoved;
 
 		private readonly HashSet<IEntity> _entities = new HashSet<IEntity>();
 
@@ -33,18 +29,14 @@ namespace ECSLight
 			return _entities.Contains(item);
 		}
 
-		public void Add(IEntity item, object old = null, object component = null)
+		public void Add(IEntity item)
 		{
 			_entities.Add(item);
-			OnAdded?.Invoke(item, old, component);
 		}
 
-		public bool Remove(IEntity item, object old, object component = null)
+		public bool Remove(IEntity item)
 		{
-			var hadEntity = _entities.Remove(item);
-			if (hadEntity)
-				OnRemoved?.Invoke(item, old, component);
-			return hadEntity;
+			return _entities.Remove(item);
 		}
 
 		public IEnumerator<IEntity> GetEnumerator()
