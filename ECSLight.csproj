@@ -65,6 +65,7 @@
     <Compile Include="ISetManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetManager.cs" />
+    <Compile Include="System.cs" />
   </ItemGroup>
   <Import Condition="'$(Configuration)' == 'Debug'" Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Condition="'$(Configuration)' == 'Release'" Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

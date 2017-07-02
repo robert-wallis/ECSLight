@@ -62,8 +62,8 @@ namespace Tests
 		{
 			// GIVEN a disabled set of entities
 			var entities = new List<IEntity>();
-			var setManager = (ISetManager)new SetManager(entities);
-			var componentManger = (IComponentManager)new ComponentManager(setManager);
+			var setManager = (ISetManager) new SetManager(entities);
+			var componentManger = (IComponentManager) new ComponentManager(setManager);
 			var entity = new Entity(new StubEntityManager(), componentManger, "test entity");
 			entities.Add(entity);
 			var set = setManager.CreateSet(e => e.Contains<AComponent>());
@@ -98,8 +98,8 @@ namespace Tests
 		{
 			// GIVEN a disabled set of entities
 			var entities = new List<IEntity>();
-			var setManager = (ISetManager)new SetManager(entities);
-			var componentManger = (IComponentManager)new ComponentManager(setManager);
+			var setManager = (ISetManager) new SetManager(entities);
+			var componentManger = (IComponentManager) new ComponentManager(setManager);
 			var entity = new Entity(new StubEntityManager(), componentManger, "test entity");
 			entities.Add(entity);
 			var nSet = setManager.CreateSet(e => !e.Contains<AComponent>());

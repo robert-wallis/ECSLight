@@ -13,14 +13,14 @@ namespace ECSLight
 	/// </summary>
 	public class Context : IEnumerable<IEntity>, IDisposable
 	{
+		public ISetManager SetManager { get; }
 		private readonly IEntityManager _entityManager;
-		private readonly ISetManager _setManager;
 
 		public Context()
 		{
 			var entities = new List<IEntity>();
-			_setManager = new SetManager(entities);
-			var componentManager = new ComponentManager(_setManager);
+			SetManager = new SetManager(entities);
+			var componentManager = new ComponentManager(SetManager);
 			_entityManager = new EntityManager(entities, componentManager);
 		}
 
@@ -32,12 +32,10 @@ namespace ECSLight
 		/// <summary>
 		/// Dependency Constructor.  For full control of context.
 		/// </summary>
-		/// <param name="entityManager">entity manager</param>
-		/// <param name="setManager">entity set manager</param>
 		public Context(IEntityManager entityManager, ISetManager setManager)
 		{
 			_entityManager = entityManager;
-			_setManager = setManager;
+			SetManager = setManager;
 		}
 
 		/// <summary>
@@ -65,7 +63,7 @@ namespace ECSLight
 		/// <returns>An enumerable list of entities, that will update automatically.</returns>
 		public EntitySet CreateSet(EntitySet.IncludeInSet predicate)
 		{
-			return _setManager.CreateSet(predicate);
+			return SetManager.CreateSet(predicate);
 		}
 
 		/// <summary>

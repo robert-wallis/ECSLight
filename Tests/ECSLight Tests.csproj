@@ -66,6 +66,7 @@
     <Compile Include="Stubs\StubComponentManager.cs" />
     <Compile Include="Stubs\StubEntityManager.cs" />
     <Compile Include="Stubs\StubSetManager.cs" />
+    <Compile Include="SystemTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ECSLight.csproj">
