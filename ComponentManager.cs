@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ECSLight
 {
@@ -113,7 +114,7 @@ namespace ECSLight
 		{
 			if (!_components.ContainsKey(entity))
 				return EmptyComponents;
-			return _components[entity].Values.GetEnumerator();
+			return _components[entity].Values.ToList().GetEnumerator();
 		}
 	}
 }

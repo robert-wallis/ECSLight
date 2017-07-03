@@ -25,7 +25,7 @@ namespace Tests
 		}
 
 		[Test]
-		public void CoverageIEnumerable()
+		public void ModifiedEnumerable()
 		{
 			var entitySet = new EntitySet(e => true);
 			var entity = new StubEntity();
@@ -38,8 +38,10 @@ namespace Tests
 			Assert.AreSame(entity, entitySet.First());
 			var enumerable = (IEnumerable) entitySet;
 			var enumerator = enumerable.GetEnumerator();
-			Assert.IsTrue(enumerator.MoveNext());
+			entitySet.Add(new StubEntity()); // modify collection
+			Assert.IsTrue(enumerator.MoveNext(), "shouldn't crash, should have original list of entities");
 			Assert.AreSame(entity, enumerator.Current);
+			Assert.IsFalse(enumerator.MoveNext(), "should be end of original 1 entity list");
 		}
 
 	}

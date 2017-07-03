@@ -36,10 +36,14 @@ namespace Tests
 		}
 
 		[Test]
-		public void CoverIEnumerable()
+		public void ReEnumerate()
 		{
 			var componentManager = new ComponentManager(new StubSetManager());
-			using (var enumerator = componentManager.GetEnumerator(new StubEntity())) {
+			var entity = new StubEntity();
+			using (var enumerator = componentManager.GetEnumerator(entity)) {
+				componentManager.AddComponent(entity, new AComponent("modified components"));
+				Assert.IsFalse(enumerator.MoveNext());
+				componentManager.AddComponent(entity, new AComponent("modified components"));
 				Assert.IsFalse(enumerator.MoveNext());
 			}
 			// check again for dispose crash

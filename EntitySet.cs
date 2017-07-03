@@ -2,6 +2,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ECSLight
 {
@@ -41,7 +42,7 @@ namespace ECSLight
 
 		public IEnumerator<IEntity> GetEnumerator()
 		{
-			return _entities.GetEnumerator();
+			return _entities.ToList().GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
