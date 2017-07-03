@@ -27,11 +27,13 @@ namespace Tests
 			// init
 			var e = context.CreateEntity("e");
 			Assert.IsFalse(e.Contains<AComponent>());
+			Assert.IsFalse(e.Contains(typeof(AComponent)));
 
 			// add
 			var aComponent = new AComponent("a1");
 			e.Add(aComponent);
 			Assert.IsTrue(e.Contains<AComponent>());
+			Assert.IsTrue(e.Contains(typeof(AComponent)));
 			Assert.AreSame(aComponent, e.Get<AComponent>());
 			var bComponent = new BComponent();
 			Assert.IsFalse(e.Contains<BComponent>());

@@ -36,16 +36,37 @@ namespace Tests
 		}
 
 		[Test]
-		public void CoverIEnumerable()
+		public void ReEnumerate()
 		{
 			var componentManager = new ComponentManager(new StubSetManager());
-			using (var enumerator = componentManager.GetEnumerator(new StubEntity())) {
+			var entity = new StubEntity();
+			using (var enumerator = componentManager.GetEnumerator(entity)) {
+				componentManager.AddComponent(entity, new AComponent("modified components"));
+				Assert.IsFalse(enumerator.MoveNext());
+				componentManager.AddComponent(entity, new AComponent("modified components"));
 				Assert.IsFalse(enumerator.MoveNext());
 			}
 			// check again for dispose crash
 			using (var enumerator = componentManager.GetEnumerator(new StubEntity())) {
 				Assert.IsFalse(enumerator.MoveNext());
 			}
+		}
+
+		[Test]
+		public void DisposeDisposableComponents()
+		{
+			// GIVEN a disposable component
+			var disposed = false;
+			var componentManager = new ComponentManager(new StubSetManager());
+			var entity = new Entity(_stubEntityManager, componentManager) {
+				new DisposableComponent(() => disposed = true)
+			};
+
+			// WHEN it is removed
+			componentManager.RemoveComponent<DisposableComponent>(entity);
+
+			// THEN it should fire the IDisposable.Dispose() function
+			Assert.IsTrue(disposed);
 		}
 	}
 }

@@ -63,7 +63,7 @@ namespace Tests
 			var entity = context.CreateEntity("original");
 			var component = new AComponent("a1");
 			// set doesn't match until component is attached
-			var setA = context.CreateSet(e => SetManager.EntityMatchesTypes(e, typeof(AComponent)));
+			var setA = context.CreateSet(e => e.Contains<AComponent>());
 			{
 				Assert.AreEqual(0, setA.Count);
 				entity.Add(component);
@@ -77,7 +77,7 @@ namespace Tests
 			// B doesn't match 'entity' because it doesn't have a BComponent.
 			{
 				Assert.AreEqual(1, setA.Count);
-				var setB = context.CreateSet(e => SetManager.EntityMatchesTypes(e, typeof(BComponent)));
+				var setB = context.CreateSet(e => e.Contains<BComponent>());
 				Assert.AreEqual(0, setB.Count);
 			}
 
@@ -85,7 +85,7 @@ namespace Tests
 			{
 				Assert.AreEqual(1, setA.Count);
 				Assert.IsFalse(entity.Contains<BComponent>());
-				var setAandB = context.CreateSet(e => SetManager.EntityMatchesTypes(e, typeof(AComponent), typeof(BComponent)));
+				var setAandB = context.CreateSet(e => e.Contains<AComponent>() && e.Contains<BComponent>());
 				Assert.AreNotSame(setA, setAandB);
 				Assert.AreEqual(0, setAandB.Count, "IEntity should not match, has no BComponent");
 				var entityAandB = context.CreateEntity("ab");
@@ -99,7 +99,7 @@ namespace Tests
 
 			// another A set should also match
 			{
-				var setA2 = context.CreateSet(e => SetManager.EntityMatchesTypes(e, typeof(AComponent)));
+				var setA2 = context.CreateSet(e => e.Contains<AComponent>());
 				foreach (var e in setA2) {
 					Assert.AreEqual(component, e.Get<AComponent>());
 				}
@@ -121,7 +121,7 @@ namespace Tests
 			var entity = context.CreateEntity("edge");
 			entity.Add(new AComponent("a"));
 			entity.Add(new BComponent());
-			var set = context.CreateSet(e => SetManager.EntityMatchesTypes(e, typeof(AComponent), typeof(BComponent)));
+			var set = context.CreateSet(e => e.Contains<AComponent>() && e.Contains<BComponent>());
 			Assert.AreEqual(1, set.Count, "Set should only have 1 entity when it matches 2 components");
 		}
 
@@ -129,7 +129,7 @@ namespace Tests
 		public void ContextSetRemoval()
 		{
 			var context = new Context();
-			var set = context.CreateSet(e => SetManager.EntityMatchesTypes(e, typeof(AComponent)));
+			var set = context.CreateSet(e => e.Contains<AComponent>());
 			var entity = context.CreateEntity("set");
 			var component = new AComponent("a1");
 			entity.Add(component);
@@ -149,20 +149,11 @@ namespace Tests
 		public void ContextDispose()
 		{
 			// WHEN the context is disposed
-			// THEN the entities should be properly disposed by sending removal events
+			// THEN the entities should be properly disposed
 			var onRemoved = false;
 			using (var context = new Context()) {
 				var entity = context.CreateEntity("dispose");
-				entity.Add(new AComponent("a"));
-				var set = context.CreateSet(e => e.Contains<AComponent>());
-				set.OnRemoved += (e, o, n) =>
-				{
-					Assert.IsTrue(e.ToString().StartsWith("dispose"), $"expected \"{e}\" to start with \"dispose\"");
-					var component = o as AComponent;
-					Assert.NotNull(component, "component != null");
-					Assert.AreEqual("a", component.Name, "Component is different");
-					onRemoved = true;
-				};
+				entity.Add(new DisposableComponent(() => onRemoved = true));
 			}
 			Assert.IsTrue(onRemoved, "OnRemoved not called");
 		}

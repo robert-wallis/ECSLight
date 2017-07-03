@@ -12,14 +12,18 @@ namespace Tests
 	public class EntityManagerTests
 	{
 		[Test]
-		public void CoverageIEnumerable()
+		public void ModifiedEnumerable()
 		{
 			var entity = new StubEntity();
-			var entityManager = new EntityManager(new List<IEntity> {entity}, new StubComponentManager());
+			var list = new List<IEntity> { entity };
+			var entityManager = new EntityManager(list, new StubComponentManager());
 			var enumerable = (IEnumerable) entityManager;
 			var enumerator = enumerable.GetEnumerator();
-			Assert.IsTrue(enumerator.MoveNext());
+			list.Add(new StubEntity()); // modify collection
+			Assert.IsTrue(enumerator.MoveNext(), "should iterate over original entity list");
 			Assert.AreSame(entity, enumerator.Current);
+			list.Add(new StubEntity()); // modify again
+			Assert.IsFalse(enumerator.MoveNext(), "should only have one entity in original list");
 		}
 	}
 }
