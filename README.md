@@ -118,71 +118,16 @@ This helps us *seperate concerns* better while still using OO languages.
 
 ECS Light contains no System specific code, because ECS Light is lightweight.
 
-But it does contain `EntitySet` which helps build reactive systems.
-
-```csharp
-using ECSLight;
-class ViewSystem {
-	public ViewSystem(Context context) {
-		// get an EntitySet who's entities have a Position
-		var positions = context.CreateSet(e => e.Contains<Position>());
-		// react to an entity who's position has been added or updated
-		positions.OnAdded += OnPositionAdded;
-	}
-	private void OnPositionAdded(IEntity entity, object oldComponent, object newComponent) {
-		var pos = newComponent as Position;
-		if (pos == null)
-			return;
-		LoadView(entity);
-	}
-	private void LoadView(IEntity entity)
-	{
-		// ... load up art assets for displaying an object in your game engine
-	}
-}
-```
-
-The above code will run `LoadView` anytime *any* entity's position is changed.
- 
-You'll want load a different image for a thug than the Batman.
-But other systems will also want to do different things for thugs and Batman.
-How do you tell them apart?  You use the component system API on the entity.
-
-First add some empty tag-like components.
-
-```csharp
-class Batman {}
-class Thug {}
-```
-
-Then check to see if the entity has that component using `Entity.Contains()`
-
-```csharp
-private void LoadView(IEntity entity)
-{
-	if (entity.Contains<Batman>())
-		LoadBatmanArt(entity);
-	else if (entity.Contains<Thug>())
-		LoadThugArt(entity);
-}
-
-private void LoadBatmanArt(entity)
-{
-	// Unity example:
-	var position = entity.Get<Position>();
-	var prefab = Resources.Load("BatmanPrefab");
-	var gameObject = (GameObject) Object.Instantiate(prefab);
-	gameObject.transform.position = new Vector3(position.X, position.Y, 0);
-	entity.Add(gameObject);
-}
-```
-
 What if I have a system that needs to act on all entities that have a set of components?  Like gravity?
+
+First we'll make a component that tells the gravity system it should use it.  Gravity moves floating things, `Movable` describes the state
+of things that can be affected by gravity.
+
 ```csharp
 class Movable{}
 ```
 
-We'll create an `EntitySet` that is automatically updated with all entities that match all the conditions, they must be `Movable` and have a `Position` to move.
+We'll create an `EntitySet` that is automatically updated with the matching conditions, they must be `Movable` and have a `Position` to move.
 
 ```csharp
 using ECSLight;
@@ -219,26 +164,6 @@ Because other things could update the position too.
 Like pressing 'up' on the keyboard, an explosion, or a grappling hook.
 All those things have different 'concerns'.
 We want to "seperate concerns".
-
-In the above `ViewSystem.OnPositionAdded` example, every time a position changes, the view is loaded again.
-Let's change that code to check for updates.
-
-```csharp
-	private void OnPositionAdded(IEntity entity, object oldComponent, object newComponent) {
-		var pos = newComponent as Position;
-		if (pos == null)
-			return;
-		// check if it's an Add or an Update
-		if (oldComponent == null)
-			LoadView(entity);
-		else
-			UpdateView(entity, pos);
-	}
-	private void UpdateView(IEntity entity, Position pos) {
-		var view = entity.Get<GameObject>();
-		view.transform.position = new Vector3(pos.X, pos.Y, 0);
-	}
- ```
 
 ### Conclusion
 
