@@ -56,23 +56,5 @@ namespace ECSLight
 					set.Remove(entity);
 			}
 		}
-
-		/// <summary>
-		/// Checks if the entity should be in the types list.
-		/// </summary>
-		/// <returns>true if the entity matches</returns>
-		public static bool EntityMatchesTypes(IEntity entity, params Type[] types)
-		{
-			var all = false;
-			foreach (var type in types) {
-				if (entity.Contains(type)) {
-					all = true;
-				} else {
-					all = false;
-					break;
-				}
-			}
-			return all;
-		}
 	}
 }
