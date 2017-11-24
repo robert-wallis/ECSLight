@@ -1,6 +1,5 @@
 // Copyright (C) 2017 Robert A. Wallis, All Rights Reserved.
 
-using System;
 using System.Collections.Generic;
 
 namespace ECSLight
