@@ -1,31 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECSLight", "ECSLight.csproj", "{51AE03BA-D19C-46EF-8CC9-7B54E05D78F7}"
+# Visual Studio 2013
+VisualStudioVersion = 12.0.0.0
+MinimumVisualStudioVersion = 10.0.0.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECSLight", "ECSLight.csproj", "{E6577ADB-B63D-4E2B-AA20-FA44ACC7651A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECSLight Tests", "Tests\ECSLight Tests.csproj", "{8BC4EAFE-3AFC-4B27-86C4-0713814B38B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{6A87D437-0B41-4669-AB14-029A452B1624}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-		Unity .NET 3.5|Any CPU = Unity .NET 3.5|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{51AE03BA-D19C-46EF-8CC9-7B54E05D78F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{51AE03BA-D19C-46EF-8CC9-7B54E05D78F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{51AE03BA-D19C-46EF-8CC9-7B54E05D78F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{51AE03BA-D19C-46EF-8CC9-7B54E05D78F7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{51AE03BA-D19C-46EF-8CC9-7B54E05D78F7}.Unity .NET 3.5|Any CPU.ActiveCfg = Unity .NET 3.5|Any CPU
-		{51AE03BA-D19C-46EF-8CC9-7B54E05D78F7}.Unity .NET 3.5|Any CPU.Build.0 = Unity .NET 3.5|Any CPU
-		{8BC4EAFE-3AFC-4B27-86C4-0713814B38B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8BC4EAFE-3AFC-4B27-86C4-0713814B38B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8BC4EAFE-3AFC-4B27-86C4-0713814B38B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8BC4EAFE-3AFC-4B27-86C4-0713814B38B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8BC4EAFE-3AFC-4B27-86C4-0713814B38B5}.Unity .NET 3.5|Any CPU.ActiveCfg = Debug|Any CPU
-		{8BC4EAFE-3AFC-4B27-86C4-0713814B38B5}.Unity .NET 3.5|Any CPU.Build.0 = Debug|Any CPU
+		{E6577ADB-B63D-4E2B-AA20-FA44ACC7651A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6577ADB-B63D-4E2B-AA20-FA44ACC7651A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6577ADB-B63D-4E2B-AA20-FA44ACC7651A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6577ADB-B63D-4E2B-AA20-FA44ACC7651A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A87D437-0B41-4669-AB14-029A452B1624}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A87D437-0B41-4669-AB14-029A452B1624}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A87D437-0B41-4669-AB14-029A452B1624}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A87D437-0B41-4669-AB14-029A452B1624}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

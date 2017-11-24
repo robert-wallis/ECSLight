@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 #else
 [assembly: AssemblyTitle("ECS Light for Unity")]
 #endif
-[assembly: AssemblyDescription("A lightweight ECS")]
+[assembly: AssemblyDescription("A lightweight entity component system.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Walnut Cube")]
 [assembly: AssemblyProduct("ECS Light")]
