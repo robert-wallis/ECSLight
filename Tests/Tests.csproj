@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E6577ADB-B63D-4E2B-AA20-FA44ACC7651A}</ProjectGuid>
+    <ProjectGuid>{6A87D437-0B41-4669-AB14-029A452B1624}</ProjectGuid>
     <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ECSLight</RootNamespace>
-    <AssemblyName>ECSLight</AssemblyName>
+    <RootNamespace>Tests</RootNamespace>
+    <AssemblyName>Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -37,23 +37,31 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb">
+      <HintPath>..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComponentManager.cs" />
-    <Compile Include="Context.cs" />
-    <Compile Include="Entity.cs" />
-    <Compile Include="EntityManager.cs" />
-    <Compile Include="EntitySet.cs" />
-    <Compile Include="IComponentManager.cs" />
-    <Compile Include="IEntity.cs" />
-    <Compile Include="IEntityManager.cs" />
-    <Compile Include="ISetManager.cs" />
+    <Compile Include="ComponentManagerTests.cs" />
+    <Compile Include="ContextTests.cs" />
+    <Compile Include="EntityManagerTests.cs" />
+    <Compile Include="EntitySetTests.cs" />
+    <Compile Include="EntityTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SetManager.cs" />
+    <Compile Include="SetManagerTests.cs" />
+    <Compile Include="Stubs\AComponent.cs" />
+    <Compile Include="Stubs\BComponent.cs" />
+    <Compile Include="Stubs\DisposableComponent.cs" />
+    <Compile Include="Stubs\StubComponentManager.cs" />
+    <Compile Include="Stubs\StubEntity.cs" />
+    <Compile Include="Stubs\StubEntityManager.cs" />
+    <Compile Include="Stubs\StubSetManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="LICENSE" />
-    <Content Include="README.md" />
+    <ProjectReference Include="..\ECSLight.csproj">
+      <Project>{e6577adb-b63d-4e2b-aa20-fa44acc7651a}</Project>
+      <Name>ECSLight</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
